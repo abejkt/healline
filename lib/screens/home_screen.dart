@@ -88,6 +88,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String greeting = DateFormatterId.getTimeGreeting();
     return Row(
       children: [
         Expanded(
@@ -95,7 +96,7 @@ class _Header extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Selamat pagi, $userName',
+                '$greeting, $userName',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,

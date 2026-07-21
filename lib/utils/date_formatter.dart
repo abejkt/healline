@@ -1,6 +1,19 @@
 class DateFormatterId {
   DateFormatterId._();
 
+  static String getTimeGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour >= 4 && hour < 11) {
+      return 'Selamat pagi';
+    } else if (hour >= 11 && hour < 15) {
+      return 'Selamat siang';
+    } else if (hour >= 15 && hour < 18) {
+      return 'Selamat sore';
+    } else {
+      return 'Selamat malam';
+    }
+  }
+
   static const _weekdayNamesId = [
     'Senin',
     'Selasa',
