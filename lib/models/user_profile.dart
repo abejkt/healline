@@ -1,6 +1,7 @@
 import 'family_member.dart';
 
 class UserProfile {
+  final String id;
   final String name;
   final String initials;
   final String nikMasked;
@@ -11,6 +12,7 @@ class UserProfile {
   final List<FamilyMember> familyMembers;
 
   const UserProfile({
+    required this.id,
     required this.name,
     required this.initials,
     required this.nikMasked,
@@ -23,6 +25,7 @@ class UserProfile {
 
   factory UserProfile.fromMap(Map<String, dynamic> map) {
     return UserProfile(
+      id: map['id']?.toString() ?? '',
       name: map['name']?.toString() ?? '',
       initials: map['initials']?.toString() ?? '',
       nikMasked: map['nik_masked']?.toString() ?? '',
@@ -39,6 +42,7 @@ class UserProfile {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
       'initials': initials,
       'nik_masked': nikMasked,
