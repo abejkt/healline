@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../utils/date_formatter.dart';
 import '../services/auth_service.dart';
+import '../services/queue_service.dart';
+import '../models/active_queue_status.dart';
 import '../themes/app_theme.dart';
 import 'ambil_antrian_screen.dart';
 import 'status_antrian_screen.dart';
@@ -18,37 +20,88 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Static demo data — wire these up to real state/services later.
-  final String _userName = AuthService.currentUser?.name ?? 'Tamu';
+  final QueueService _queueService = QueueService();
+  
+  String _userName = AuthService.currentUser?.name ?? 'Tamu';
   final String _dateLabel = DateFormatterId.formatFullDateId(DateTime.now());
-  final String _queueNumber = 'A-042';
-  final String _queueStatus = 'Menunggu';
-  final String _queueDetail = 'Poli Umum · Est. 10:30 WIB · 3 antrian lagi';
+  
+  String? _queueNumber;
+  String? _queueStatus;
+  String? _queueDetail;
+  bool _isLoadingQueue = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchActiveQueue();
+  }
+
+  Future<void> _fetchActiveQueue() async {
+    final user = AuthService.currentUser;
+    if (user == null) return;
+
+    setState(() {
+      _isLoadingQueue = true;
+      _userName = user.name;
+    });
+
+    try {
+      // 1. Fetch upcoming queues for this user
+      final upcoming = await _queueService.fetchUpcomingQueues(user.id);
+      
+      if (upcoming.isNotEmpty) {
+        // 2. Take the first one and fetch its active status details
+        final ticket = upcoming.first;
+        final status = await _queueService.fetchActiveQueue(ticket.ticketNumber);
+        
+        if (status != null) {
+          setState(() {
+            _queueNumber = status.ticketNumber;
+            _queueStatus = status.statusLabel;
+            _queueDetail = '${status.poliName} · ${status.etaLabel} · ${status.remainingCount} antrian lagi';
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching active queue on home: $e');
+    } finally {
+      if (mounted) setState(() => _isLoadingQueue = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-          children: [
-            _Header(userName: _userName, dateLabel: _dateLabel),
-            const SizedBox(height: 20),
-            _ActiveQueueCard(
-              queueNumber: _queueNumber,
-              status: _queueStatus,
-              detail: _queueDetail,
-            ),
-            const SizedBox(height: 24),
-            const _SectionLabel('MENU UTAMA'),
-            const SizedBox(height: 12),
-            _MainMenuGrid(),
-            const SizedBox(height: 24),
-            const _SectionLabel('INFO RUMAH SAKIT'),
-            const SizedBox(height: 12),
-            const _HospitalInfoCard(),
-          ],
+        child: RefreshIndicator(
+          onRefresh: _fetchActiveQueue,
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            children: [
+              _Header(userName: _userName, dateLabel: _dateLabel),
+              const SizedBox(height: 20),
+              if (_isLoadingQueue)
+                const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator()))
+              else if (_queueNumber != null)
+                _ActiveQueueCard(
+                  queueNumber: _queueNumber!,
+                  status: _queueStatus ?? '-',
+                  detail: _queueDetail ?? '',
+                )
+              else
+                _NoActiveQueueCard(),
+              const SizedBox(height: 24),
+              const _SectionLabel('MENU UTAMA'),
+              const SizedBox(height: 12),
+              _MainMenuGrid(),
+              const SizedBox(height: 24),
+              const _SectionLabel('INFO RUMAH SAKIT'),
+              const SizedBox(height: 12),
+              const _HospitalInfoCard(),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -75,6 +128,52 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
               icon: Icon(Icons.article_outlined), label: 'Riwayat'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+        ],
+      ),
+    );
+  }
+}
+
+class _NoActiveQueueCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.cardWhite,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.inputBorder),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.confirmation_number_outlined, size: 40, color: AppColors.textSecondary),
+          const SizedBox(height: 12),
+          const Text(
+            'Tidak ada antrian aktif',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Ambil nomor antrian untuk hari ini.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () => Navigator.pushNamed(context, AmbilAntrianScreen.routeName),
+              child: const Text('Ambil Antrian'),
+            ),
+          ),
         ],
       ),
     );
