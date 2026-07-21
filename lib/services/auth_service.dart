@@ -27,4 +27,36 @@ class AuthService {
       throw Exception('Login failed: ${response.statusCode}');
     }
   }
+
+  Future<bool> register({
+    required String name,
+    required String email,
+    required String phone,
+    required String nik,
+    required String password,
+  }) async {
+    final passwordHash = sha256.convert(utf8.encode(password)).toString();
+    final initials = name.isNotEmpty ? name[0].toUpperCase() : '?';
+
+    final response = await http.post(
+      Uri.parse('${ApiConfig.baseUrl}/user_profiles'),
+      headers: {
+        ...ApiConfig.headers,
+        'Prefer': 'return=representation',
+      },
+      body: json.encode({
+        'id': DateTime.now().millisecondsSinceEpoch.toString(), // Simple unique ID
+        'name': name,
+        'email': email,
+        'phone_masked': phone, // In real app, you'd mask it or store full
+        'nik_masked': nik,
+        'password_hash': passwordHash,
+        'initials': initials,
+        'is_verified': false,
+        'no_rm': 'PENDING',
+      }),
+    );
+
+    return response.statusCode == 201;
+  }
 }

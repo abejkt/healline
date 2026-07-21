@@ -93,7 +93,7 @@ class WelcomeScreen extends StatelessWidget {
                     const SizedBox(height: 12),
                     OutlinedButton(
                       onPressed: () {
-                        // TODO: navigate ke registration screen
+                        Navigator.pushNamed(context, RegisterScreen.routeName);
                       },
                       child: const Text('Daftar akun baru'),
                     ),

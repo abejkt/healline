@@ -5,6 +5,7 @@ import '../themes/app_theme.dart';
 import '../services/auth_service.dart';
 import 'otp_screen.dart';
 import 'home_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -29,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _registerTapRecognizer = TapGestureRecognizer()
       ..onTap = () {
-        // TODO: navigate to form registrasi
+        Navigator.pushNamed(context, RegisterScreen.routeName);
       };
   }
 
