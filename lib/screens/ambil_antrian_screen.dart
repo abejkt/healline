@@ -44,17 +44,12 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
   void initState() {
     super.initState();
     
-    final now = DateTime.now();
-    _selectedDate = MockDatabase.nextVisitDate.isBefore(now) 
-        ? now.add(const Duration(days: 1)) 
-        : MockDatabase.nextVisitDate;
+    _selectedDate = DateTime.now().add(const Duration(days: 1));
 
-    // Load patients from the current logged-in user
     final user = AuthService.currentUser;
     if (user != null) {
       _availablePatients = _patientService.getPatients(user, user.familyMembers);
     } else {
-      // Fallback for demo if not logged in
       _availablePatients = [
         const Patient(id: 'guest', name: 'Tamu', relationLabel: 'diri sendiri'),
       ];
