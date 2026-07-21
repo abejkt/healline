@@ -3,6 +3,7 @@ import '../utils/date_formatter.dart';
 import '../services/auth_service.dart';
 import '../services/doctor_service.dart';
 import '../services/patient_service.dart';
+import '../services/poli_service.dart';
 import '../models/mock_database.dart';
 import '../models/doctor.dart';
 import '../models/patient.dart';
@@ -24,31 +25,37 @@ class AmbilAntrianScreen extends StatefulWidget {
 }
 
 class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
-  late String _selectedPoliId;
+  String? _selectedPoliId;
   String? _selectedDoctorId;
   late DateTime _selectedDate;
   late Patient _selectedPatient;
 
+  final PoliService _poliService = PoliService();
   final DoctorService _doctorService = DoctorService();
   final PatientService _patientService = PatientService();
+  
+  List<Poli> _polis = [];
   List<Doctor> _doctors = [];
   List<Patient> _availablePatients = [];
+  
+  bool _isLoadingPolis = true;
   bool _isLoadingDoctors = false;
 
   @override
   void initState() {
     super.initState();
-    _selectedPoliId = MockDatabase.polis.first.id;
     
     final now = DateTime.now();
     _selectedDate = MockDatabase.nextVisitDate.isBefore(now) 
         ? now.add(const Duration(days: 1)) 
         : MockDatabase.nextVisitDate;
 
+    // Load patients from the current logged-in user
     final user = AuthService.currentUser;
     if (user != null) {
       _availablePatients = _patientService.getPatients(user, user.familyMembers);
     } else {
+      // Fallback for demo if not logged in
       _availablePatients = [
         const Patient(id: 'guest', name: 'Tamu', relationLabel: 'diri sendiri'),
       ];
@@ -58,17 +65,39 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
         ? _availablePatients.first 
         : const Patient(id: 'guest', name: 'Tamu', relationLabel: '');
 
-    _fetchDoctors();
+    _fetchPolis();
+  }
+
+  Future<void> _fetchPolis() async {
+    setState(() => _isLoadingPolis = true);
+    try {
+      final polis = await _poliService.fetchPolis();
+      setState(() {
+        _polis = polis;
+        if (_polis.isNotEmpty) {
+          _selectedPoliId = _polis.first.id;
+        }
+      });
+      if (_selectedPoliId != null) {
+        _fetchDoctors();
+      }
+    } catch (e) {
+      debugPrint('Error fetching polis: $e');
+    } finally {
+      setState(() => _isLoadingPolis = false);
+    }
   }
 
   Future<void> _fetchDoctors() async {
+    if (_selectedPoliId == null) return;
+
     setState(() {
       _isLoadingDoctors = true;
       _selectedDoctorId = null;
     });
 
     try {
-      final doctors = await _doctorService.fetchDoctors(_selectedPoliId);
+      final doctors = await _doctorService.fetchDoctors(_selectedPoliId!);
       setState(() {
         _doctors = doctors;
         final available = doctors.where((d) => d.isAvailable).toList();
@@ -170,10 +199,14 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
           children: [
             const _SectionLabel('PILIH POLIKLINIK'),
             const SizedBox(height: 12),
-            _PoliGrid(
-              selectedPoliId: _selectedPoliId,
-              onSelected: _onPoliSelected,
-            ),
+            if (_isLoadingPolis)
+              const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator()))
+            else
+              _PoliGrid(
+                selectedPoliId: _selectedPoliId ?? '',
+                polis: _polis,
+                onSelected: _onPoliSelected,
+              ),
             const SizedBox(height: 24),
             const _SectionLabel('TANGGAL KUNJUNGAN'),
             const SizedBox(height: 12),
@@ -237,16 +270,17 @@ class _SectionLabel extends StatelessWidget {
 
 class _PoliGrid extends StatelessWidget {
   final String selectedPoliId;
+  final List<Poli> polis;
   final ValueChanged<String> onSelected;
 
-  const _PoliGrid({required this.selectedPoliId, required this.onSelected});
+  const _PoliGrid({required this.selectedPoliId, required this.polis, required this.onSelected});
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: MockDatabase.polis.length,
+      itemCount: polis.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         mainAxisSpacing: 12,
@@ -254,7 +288,7 @@ class _PoliGrid extends StatelessWidget {
         childAspectRatio: 2.6,
       ),
       itemBuilder: (context, index) {
-        final Poli poli = MockDatabase.polis[index];
+        final Poli poli = polis[index];
         final bool isSelected = poli.id == selectedPoliId;
         return _PoliCard(
           poli: poli,
