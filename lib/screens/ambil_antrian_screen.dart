@@ -39,18 +39,15 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
     super.initState();
     _selectedPoliId = MockDatabase.polis.first.id;
     
-    // Ensure initial date is not before today to avoid date picker crash
     final now = DateTime.now();
     _selectedDate = MockDatabase.nextVisitDate.isBefore(now) 
         ? now.add(const Duration(days: 1)) 
         : MockDatabase.nextVisitDate;
 
-    // Load patients from the current logged-in user
     final user = MockDatabase.currentUser;
     if (user != null) {
       _availablePatients = _patientService.getPatients(user, user.familyMembers);
     } else {
-      // Fallback for demo if not logged in
       _availablePatients = MockDatabase.patients;
     }
     
@@ -75,7 +72,6 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
         _selectedDoctorId = available.isNotEmpty ? available.first.id : null;
       });
     } catch (e) {
-      // Handle error (e.g., show SnackBar)
       debugPrint('Error fetching doctors: $e');
     } finally {
       setState(() => _isLoadingDoctors = false);
@@ -151,7 +147,6 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
   void _confirm() {
     if (!_canConfirm) return;
     // TODO: call the real "take a queue number" API using the selections
-    // above, then navigate using the ticket it returns.
     Navigator.pushNamed(context, TiketAntrianScreen.routeName);
   }
 

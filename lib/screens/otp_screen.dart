@@ -16,7 +16,7 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   static const int _otpLength = 6;
-  static const int _resendSeconds = 102; // 01:42
+  static const int _resendSeconds = 102;
 
   final List<TextEditingController> _controllers =
   List.generate(_otpLength, (_) => TextEditingController());
@@ -29,7 +29,6 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   void initState() {
     super.initState();
-    // Pre-fill the first three digits to mirror the mockup (4, 7, 2).
     _controllers[0].text = '4';
     _controllers[1].text = '7';
     _controllers[2].text = '2';

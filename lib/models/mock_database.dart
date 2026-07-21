@@ -18,7 +18,6 @@ class MockDatabase {
     Poli(id: 'anak', name: 'Poli Anak', icon: Icons.child_care_outlined),
   ];
 
-  /// The visit date offered by default when taking a new queue number.
   static final DateTime nextVisitDate = DateTime(2026, 5, 15);
 
   static List<Patient> get patients {

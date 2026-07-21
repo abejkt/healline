@@ -28,7 +28,6 @@ class _TiketAntrianScreenState extends State<TiketAntrianScreen> {
   Future<void> _fetchTicket() async {
     setState(() => _isLoading = true);
     try {
-      // For demo, fetching ticket 'A-042'
       final ticket = await _queueService.fetchTicket('A-042');
       setState(() {
         _ticket = ticket;
@@ -194,7 +193,6 @@ class _TicketDetail extends StatelessWidget {
   }
 }
 
-/// A horizontal dashed line, used as the ticket's tear-off divider.
 class _DashedDivider extends StatelessWidget {
   const _DashedDivider();
 
@@ -225,9 +223,6 @@ class _DashedDivider extends StatelessWidget {
   }
 }
 
-/// A stylised placeholder standing in for a real QR/barcode image. Swap the
-/// child for an actual QR-code widget (e.g. package `qr_flutter`) once the
-/// ticket carries a real scannable payload.
 class _TicketCodePlaceholder extends StatelessWidget {
   const _TicketCodePlaceholder();
 

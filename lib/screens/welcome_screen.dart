@@ -16,7 +16,6 @@ class WelcomeScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Blue hero header with logo
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 48),
@@ -59,7 +58,6 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
 
-            // Bottom white/cream content
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),

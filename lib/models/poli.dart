@@ -12,7 +12,6 @@ class Poli {
   });
 
   factory Poli.fromMap(Map<String, dynamic> map) {
-    // Map icon name from string to IconData
     IconData getIcon(String? iconName) {
       switch (iconName) {
         case 'favorite_border': return Icons.favorite_border;
@@ -33,8 +32,7 @@ class Poli {
     return {
       'id': id,
       'name': name,
-      // Store icon as a identifier string for DB compatibility
-      'icon': icon.toString(), 
+      'icon': icon.toString(),
     };
   }
 }

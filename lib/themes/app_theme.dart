@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Central color & style tokens for the HealLine app.
-/// Keeping these in one place makes it easy to re-skin the app later.
 class AppColors {
   AppColors._();
 

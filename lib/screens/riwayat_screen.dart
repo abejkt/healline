@@ -53,7 +53,7 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
 
   List<String> get _availableYears {
     final years = _allVisits.map((v) => v.year.toString()).toSet().toList();
-    years.sort((a, b) => b.compareTo(a)); // Sort years descending
+    years.sort((a, b) => b.compareTo(a));
     return years;
   }
 
@@ -390,7 +390,6 @@ class _DownloadRecapRow extends StatelessWidget {
   }
 }
 
-/// Bottom navigation used on the Riwayat screen, with "Riwayat" active.
 class _RiwayatBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

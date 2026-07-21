@@ -45,12 +45,10 @@ class Doctor {
       isAvailable ? 'Kuota tersisa: $quotaRemaining' : 'Kuota penuh';
 
   factory Doctor.fromMap(Map<String, dynamic> map) {
-    // Helper to parse color safely from int or string
     Color parseColor(dynamic value) {
       if (value == null) return Colors.grey;
       if (value is int) return Color(value);
       if (value is String) {
-        // Handle hex string like "#FF..." or "0xFF..." or just "428..."
         String cleanHex = value.replaceAll('#', '').replaceAll('0x', '');
         if (cleanHex.length == 6) cleanHex = 'FF$cleanHex';
         return Color(int.parse(cleanHex, radix: 16));

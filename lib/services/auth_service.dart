@@ -45,10 +45,10 @@ class AuthService {
         'Prefer': 'return=representation',
       },
       body: json.encode({
-        'id': DateTime.now().millisecondsSinceEpoch.toString(), // Simple unique ID
+        'id': DateTime.now().millisecondsSinceEpoch.toString(),
         'name': name,
         'email': email,
-        'phone_masked': phone, // In real app, you'd mask it or store full
+        'phone_masked': phone,
         'nik_masked': nik,
         'password_hash': passwordHash,
         'initials': initials,

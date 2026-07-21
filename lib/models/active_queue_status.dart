@@ -1,4 +1,3 @@
-/// Live status of the patient's currently active queue number.
 class ActiveQueueStatus {
   final String ticketNumber;
   final String statusLabel;
@@ -73,7 +72,6 @@ extension UpcomingQueueStatusLabel on UpcomingQueueStatus {
   }
 }
 
-/// A scheduled/upcoming queue entry shown under "Antrian lainnya".
 class UpcomingQueue {
   final String ticketNumber;
   final String poliName;

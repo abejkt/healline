@@ -29,8 +29,6 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
   Future<void> _fetchData() async {
     setState(() => _isLoading = true);
     try {
-      // For demo purposes, we fetch status for ticket 'A-042' 
-      // and upcoming queues for user 'user-albert'
       final status = await _queueService.fetchActiveQueue('A-042');
       final upcoming = await _queueService.fetchUpcomingQueues('user-albert');
       

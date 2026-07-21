@@ -19,7 +19,6 @@ class ProfileScreen extends StatelessWidget {
     final UserProfile? user = MockDatabase.currentUser;
 
     if (user == null) {
-      // In a real app, you might want to redirect to login or show a placeholder
       return Scaffold(
         body: Center(
           child: Column(
@@ -113,7 +112,6 @@ Future<void> _handleLogout(BuildContext context) async {
   if (confirmed != true) return;
   if (!context.mounted) return;
 
-  // Brief loading state while the (mock) sign-out completes.
   showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -122,12 +120,11 @@ Future<void> _handleLogout(BuildContext context) async {
     ),
   );
 
-  // sign-out call — clear stored tokens/session
   MockDatabase.currentUser = null;
   await Future.delayed(const Duration(milliseconds: 600));
 
   if (!context.mounted) return;
-  Navigator.of(context, rootNavigator: true).pop(); // dismiss the loader
+  Navigator.of(context, rootNavigator: true).pop();
   Navigator.pushNamedAndRemoveUntil(
     context,
     WelcomeScreen.routeName,
@@ -483,7 +480,6 @@ class _LogoutRow extends StatelessWidget {
   }
 }
 
-/// Bottom navigation used on the Profile screen, with "Profil" active.
 class _ProfileBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
