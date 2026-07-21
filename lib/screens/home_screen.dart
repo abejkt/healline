@@ -46,11 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      // 1. Fetch upcoming queues for this user
       final upcoming = await _queueService.fetchUpcomingQueues(user.id);
       
       if (upcoming.isNotEmpty) {
-        // 2. Take the first one and fetch its active status details
         final ticket = upcoming.first;
         final status = await _queueService.fetchActiveQueue(ticket.ticketNumber);
         
