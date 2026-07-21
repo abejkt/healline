@@ -115,8 +115,8 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
     final picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime.now().subtract(const Duration(days: 1)),
-      lastDate: DateTime.now().add(const Duration(days: 60)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 30)),
     );
     if (picked != null) {
       setState(() => _selectedDate = picked);
