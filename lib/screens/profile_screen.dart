@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../themes/app_theme.dart';
 import '../services/auth_service.dart';
-import '../models/mock_database.dart';
 import '../models/family_member.dart';
 import '../models/user_profile.dart';
 import 'welcome_screen.dart';

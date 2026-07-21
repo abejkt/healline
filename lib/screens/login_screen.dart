@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../models/mock_database.dart';
 import '../themes/app_theme.dart';
 import '../services/auth_service.dart';
 import 'otp_screen.dart';
