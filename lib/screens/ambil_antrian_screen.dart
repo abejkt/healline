@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/date_formatter.dart';
+import '../services/auth_service.dart';
 import '../services/doctor_service.dart';
 import '../services/patient_service.dart';
 import '../models/mock_database.dart';
@@ -44,11 +45,13 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
         ? now.add(const Duration(days: 1)) 
         : MockDatabase.nextVisitDate;
 
-    final user = MockDatabase.currentUser;
+    final user = AuthService.currentUser;
     if (user != null) {
       _availablePatients = _patientService.getPatients(user, user.familyMembers);
     } else {
-      _availablePatients = MockDatabase.patients;
+      _availablePatients = [
+        const Patient(id: 'guest', name: 'Tamu', relationLabel: 'diri sendiri'),
+      ];
     }
     
     _selectedPatient = _availablePatients.isNotEmpty 

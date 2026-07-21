@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       if (user != null) {
-        MockDatabase.currentUser = user;
+        AuthService.currentUser = user;
         Navigator.pushNamedAndRemoveUntil(
           context,
           HomeScreen.routeName,

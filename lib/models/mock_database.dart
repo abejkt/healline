@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/patient.dart';
-import '../models/user_profile.dart';
 import 'poli.dart';
 
 class MockDatabase {
   MockDatabase._();
-
-  static UserProfile? currentUser;
 
   static const List<String> availableYearFilters = ['2026', '2025'];
   static const int totalVisitCount = 12;
@@ -19,17 +15,4 @@ class MockDatabase {
   ];
 
   static final DateTime nextVisitDate = DateTime(2026, 5, 15);
-
-  static List<Patient> get patients {
-    if (currentUser == null) return [];
-    return [
-      Patient(
-        id: 'self',
-        name: currentUser!.name,
-        relationLabel: 'diri sendiri',
-      ),
-      for (final member in currentUser!.familyMembers)
-        Patient(id: member.id, name: member.name, relationLabel: member.relation),
-    ];
-  }
 }

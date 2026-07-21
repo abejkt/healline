@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/date_formatter.dart';
+import '../services/auth_service.dart';
 import '../themes/app_theme.dart';
 import 'ambil_antrian_screen.dart';
 import 'status_antrian_screen.dart';
@@ -18,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   // Static demo data — wire these up to real state/services later.
-  final String _userName = 'Albert';
+  final String _userName = AuthService.currentUser?.name ?? 'Tamu';
   final String _dateLabel = DateFormatterId.formatFullDateId(DateTime.now());
   final String _queueNumber = 'A-042';
   final String _queueStatus = 'Menunggu';

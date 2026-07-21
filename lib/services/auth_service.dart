@@ -6,6 +6,8 @@ import '../models/user_profile.dart';
 import 'api_config.dart';
 
 class AuthService {
+  static UserProfile? currentUser;
+
   Future<UserProfile?> login(String email, String password) async {
     final passwordHash = sha256.convert(utf8.encode(password)).toString();
 
@@ -20,7 +22,8 @@ class AuthService {
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       if (data.isNotEmpty) {
-        return UserProfile.fromMap(data.first);
+        currentUser = UserProfile.fromMap(data.first);
+        return currentUser;
       }
       return null;
     } else {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../themes/app_theme.dart';
+import '../services/auth_service.dart';
 import '../models/mock_database.dart';
 import '../models/family_member.dart';
 import '../models/user_profile.dart';
@@ -16,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UserProfile? user = MockDatabase.currentUser;
+    final UserProfile? user = AuthService.currentUser;
 
     if (user == null) {
       return Scaffold(
@@ -120,7 +121,7 @@ Future<void> _handleLogout(BuildContext context) async {
     ),
   );
 
-  MockDatabase.currentUser = null;
+  AuthService.currentUser = null;
   await Future.delayed(const Duration(milliseconds: 600));
 
   if (!context.mounted) return;
