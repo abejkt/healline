@@ -4,9 +4,9 @@ import '../models/visit.dart';
 import 'api_config.dart';
 
 class VisitService {
-  Future<List<Visit>> fetchVisits() async {
+  Future<List<Visit>> fetchVisits(String userId) async {
     final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/visits?select=*&order=date.desc'),
+      Uri.parse('${ApiConfig.baseUrl}/visits?user_id=eq.$userId&select=*&order=date.desc'),
       headers: ApiConfig.headers,
     );
 

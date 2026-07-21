@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/date_formatter.dart';
 import '../models/visit.dart';
 import '../services/visit_service.dart';
+import '../services/auth_service.dart';
 import '../themes/app_theme.dart';
 import 'home_screen.dart';
 import 'ambil_antrian_screen.dart';
@@ -31,9 +32,15 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
   }
 
   Future<void> _fetchVisits() async {
+    final user = AuthService.currentUser;
+    if (user == null) {
+      setState(() => _isLoading = false);
+      return;
+    }
+
     setState(() => _isLoading = true);
     try {
-      final visits = await _visitService.fetchVisits();
+      final visits = await _visitService.fetchVisits(user.id);
       setState(() {
         _allVisits = visits;
       });
