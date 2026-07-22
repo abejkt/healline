@@ -1,6 +1,6 @@
-# healline
+# HealLine
 
-HealLine - Smart Queue Management
+HealLine - Smart Queue Management for Better Healthcare
 
 ## Getting Started
 
