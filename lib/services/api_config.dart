@@ -7,7 +7,7 @@ class ApiConfig {
   static const String jwtToken = 'AGNDGFwD3cdj49Je3FHJIV8YQN7R1Cwmgc+GNa6Q';
 
   static Map<String, String> get headers => {
-        'apikey': $apiKey,
+        'apikey': '$apiKey',
         'Authorization': 'Bearer $jwtToken',
         'Content-Type': 'application/json',
       };
