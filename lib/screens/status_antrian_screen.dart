@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/active_queue_status.dart';
+import '../services/auth_service.dart';
 import '../services/queue_service.dart';
 import '../themes/app_theme.dart';
 import 'home_screen.dart';
@@ -19,18 +20,43 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
   ActiveQueueStatus? _status;
   List<UpcomingQueue> _upcoming = [];
   bool _isLoading = true;
+  String? _passedTicketNumber;
 
   @override
-  void initState() {
-    super.initState();
-    _fetchData();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is String && _passedTicketNumber == null) {
+      _passedTicketNumber = args;
+      _fetchData();
+    } else if (args == null && _passedTicketNumber == null && _isLoading) {
+      _fetchData();
+    }
   }
 
   Future<void> _fetchData() async {
+    final user = AuthService.currentUser;
+    if (user == null) {
+      setState(() => _isLoading = false);
+      return;
+    }
+
     setState(() => _isLoading = true);
     try {
-      final status = await _queueService.fetchActiveQueue('A-042');
-      final upcoming = await _queueService.fetchUpcomingQueues('user-albert');
+      // 1. Fetch all upcoming queues for user
+      final upcoming = await _queueService.fetchUpcomingQueues(user.id);
+      
+      // 2. Determine which ticket to show as "Active"
+      String? targetTicket = _passedTicketNumber;
+      if (targetTicket == null && upcoming.isNotEmpty) {
+        targetTicket = upcoming.first.ticketNumber;
+      }
+
+      // 3. Fetch status for the target ticket
+      ActiveQueueStatus? status;
+      if (targetTicket != null) {
+        status = await _queueService.fetchActiveQueue(targetTicket);
+      }
       
       setState(() {
         _status = status;
@@ -39,7 +65,7 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
     } catch (e) {
       debugPrint('Error fetching queue status: $e');
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 

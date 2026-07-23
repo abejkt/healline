@@ -191,7 +191,6 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
       final poli = _polis.firstWhere((p) => p.id == _selectedPoliId);
       final doctor = _doctors.firstWhere((d) => d.id == _selectedDoctorId);
       
-      // Generate simple ticket number (In real backend, this should be done by the server)
       final prefix = poli.name.contains('Umum') ? 'A' : (poli.name.contains('Anak') ? 'B' : 'C');
       final randomNum = (DateTime.now().millisecondsSinceEpoch % 1000).toString().padLeft(3, '0');
       final ticketNumber = '$prefix-$randomNum';
