@@ -16,9 +16,6 @@ class AuthService {
       headers: ApiConfig.headers,
     );
 
-    debugPrint('SERVER RESPONSE CODE: ${response.statusCode}');
-    debugPrint('SERVER BODY: ${response.body}');
-
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       if (data.isNotEmpty) {

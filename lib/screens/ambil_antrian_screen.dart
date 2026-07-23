@@ -5,6 +5,7 @@ import '../services/doctor_service.dart';
 import '../services/patient_service.dart';
 import '../services/poli_service.dart';
 import '../services/queue_service.dart';
+import '../services/visit_service.dart';
 import '../models/doctor.dart';
 import '../models/patient.dart';
 import '../models/poli.dart';
@@ -34,6 +35,7 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
   final DoctorService _doctorService = DoctorService();
   final PatientService _patientService = PatientService();
   final QueueService _queueService = QueueService();
+  final VisitService _visitService = VisitService();
   
   List<Poli> _polis = [];
   List<Doctor> _doctors = [];
@@ -205,6 +207,18 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
       };
 
       final ticket = await _queueService.createUpcomingQueue(queueData);
+
+      // Create a record in the visits table as well
+      final visitData = {
+        'id': 'v-${ticket.ticketNumber}',
+        'user_id': user.id,
+        'poli': poli.name,
+        'doctor_name': doctor.name,
+        'date': _selectedDate.toIso8601String(),
+        'queue_code': ticket.ticketNumber,
+        'status': 'terjadwal',
+      };
+      await _visitService.createVisit(visitData);
 
       if (!mounted) return;
       Navigator.pop(context); // Dismiss loading dialog

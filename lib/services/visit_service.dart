@@ -17,4 +17,22 @@ class VisitService {
       throw Exception('Failed to load visits: ${response.statusCode}');
     }
   }
+
+  Future<Visit> createVisit(Map<String, dynamic> visitData) async {
+    final response = await http.post(
+      Uri.parse('${ApiConfig.baseUrl}/visits'),
+      headers: {
+        ...ApiConfig.headers,
+        'Prefer': 'return=representation',
+      },
+      body: json.encode(visitData),
+    );
+
+    if (response.statusCode == 201) {
+      final List<dynamic> data = json.decode(response.body);
+      return Visit.fromMap(data.first);
+    } else {
+      throw Exception('Failed to create visit: ${response.statusCode}');
+    }
+  }
 }

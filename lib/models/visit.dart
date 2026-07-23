@@ -1,4 +1,4 @@
-enum VisitStatus { selesai, batal, tidakHadir }
+enum VisitStatus { selesai, batal, tidakHadir, terjadwal }
 
 extension VisitStatusLabel on VisitStatus {
   String get label {
@@ -9,6 +9,8 @@ extension VisitStatusLabel on VisitStatus {
         return 'Dibatalkan';
       case VisitStatus.tidakHadir:
         return 'Tidak hadir';
+      case VisitStatus.terjadwal:
+        return 'Terjadwal';
     }
   }
 
