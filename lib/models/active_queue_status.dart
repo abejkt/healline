@@ -27,7 +27,7 @@ class ActiveQueueStatus {
       statusLabel: map['status_label']?.toString() ?? '',
       poliName: map['poli_name']?.toString() ?? '',
       doctorName: map['doctor_name']?.toString() ?? '',
-      calledNumber_label: map['called_number_label']?.toString() ?? '',
+      calledNumberLabel: map['called_number_label']?.toString() ?? '',
       remainingCount: map['remaining_count'] is int
           ? map['remaining_count']
           : int.tryParse(map['remaining_count']?.toString() ?? '0') ?? 0,
