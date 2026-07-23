@@ -1,53 +1,27 @@
 class ActiveQueueStatus {
-  final String ticketNumber;
-  final String statusLabel;
-  final String poliName;
   final String doctorName;
+  final String poliName;
   final String calledNumberLabel;
-  final int remainingCount;
-  final String etaLabel;
-  final double progressPercent; // 0.0 - 1.0
 
   const ActiveQueueStatus({
-    required this.ticketNumber,
-    required this.statusLabel,
-    required this.poliName,
     required this.doctorName,
+    required this.poliName,
     required this.calledNumberLabel,
-    required this.remainingCount,
-    required this.etaLabel,
-    required this.progressPercent,
   });
-
-  int get progressPercentLabel => (progressPercent * 100).round();
 
   factory ActiveQueueStatus.fromMap(Map<String, dynamic> map) {
     return ActiveQueueStatus(
-      ticketNumber: map['ticket_number']?.toString() ?? '',
-      statusLabel: map['status_label']?.toString() ?? '',
-      poliName: map['poli_name']?.toString() ?? '',
       doctorName: map['doctor_name']?.toString() ?? '',
+      poliName: map['poli_name']?.toString() ?? '',
       calledNumberLabel: map['called_number_label']?.toString() ?? '',
-      remainingCount: map['remaining_count'] is int
-          ? map['remaining_count']
-          : int.tryParse(map['remaining_count']?.toString() ?? '0') ?? 0,
-      etaLabel: map['eta_label']?.toString() ?? '',
-      progressPercent: map['progress_percent'] is num
-          ? (map['progress_percent'] as num).toDouble()
-          : double.tryParse(map['progress_percent']?.toString() ?? '0') ?? 0.0,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'ticket_number': ticketNumber,
-      'status_label': statusLabel,
       'poli_name': poliName,
       'doctor_name': doctorName,
-      'called_number_label': ticketNumber, // Using ticket as placeholder for called
-      'remaining_count': remainingCount,
-      'eta_label': etaLabel,
-      'progress_percent': progressPercent,
+      'called_number_label': ticketNumber,
     };
   }
 }
