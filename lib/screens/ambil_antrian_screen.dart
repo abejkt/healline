@@ -4,6 +4,7 @@ import '../services/auth_service.dart';
 import '../services/doctor_service.dart';
 import '../services/patient_service.dart';
 import '../services/poli_service.dart';
+import '../services/queue_service.dart';
 import '../models/doctor.dart';
 import '../models/patient.dart';
 import '../models/poli.dart';
@@ -32,6 +33,7 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
   final PoliService _poliService = PoliService();
   final DoctorService _doctorService = DoctorService();
   final PatientService _patientService = PatientService();
+  final QueueService _queueService = QueueService();
   
   List<Poli> _polis = [];
   List<Doctor> _doctors = [];
@@ -168,12 +170,58 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
     }
   }
 
-  bool get _canConfirm => _selectedDoctorId != null;
+  bool get _canConfirm => _selectedDoctorId != null && !_isLoadingPolis && !_isLoadingDoctors;
 
-  void _confirm() {
+  Future<void> _confirm() async {
     if (!_canConfirm) return;
-    // TODO: call the real "take a queue number" API using the selections
-    Navigator.pushNamed(context, TiketAntrianScreen.routeName);
+
+    final user = AuthService.currentUser;
+    if (user == null) return;
+
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      final poli = _polis.firstWhere((p) => p.id == _selectedPoliId);
+      final doctor = _doctors.firstWhere((d) => d.id == _selectedDoctorId);
+      
+      // Generate simple ticket number (In real backend, this should be done by the server)
+      final prefix = poli.name.contains('Umum') ? 'A' : (poli.name.contains('Anak') ? 'B' : 'C');
+      final randomNum = (DateTime.now().millisecondsSinceEpoch % 1000).toString().padLeft(3, '0');
+      final ticketNumber = '$prefix-$randomNum';
+
+      final queueData = {
+        'ticket_number': ticketNumber,
+        'poli_name': poli.name,
+        'doctor_name': doctor.name,
+        'patient_name': _selectedPatient.name,
+        'schedule_label': DateFormatterId.formatDateId(_selectedDate),
+        'user_id': user.id,
+        'status': 'mendatang',
+      };
+
+      final ticket = await _queueService.createUpcomingQueue(queueData);
+
+      if (!mounted) return;
+      Navigator.pop(context); // Dismiss loading dialog
+
+      // Navigate to ticket screen with the real ticket number
+      Navigator.pushNamed(
+        context, 
+        TiketAntrianScreen.routeName, 
+        arguments: ticket.ticketNumber,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context); // Dismiss loading dialog
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal mengambil antrian: $e')),
+      );
+    }
   }
 
   @override

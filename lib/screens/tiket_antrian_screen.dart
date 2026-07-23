@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import '../models/queue_ticket.dart';
+import '../models/active_queue_status.dart';
 import '../services/queue_service.dart';
 import '../themes/app_theme.dart';
 import 'ambil_antrian_screen.dart';
@@ -16,19 +15,32 @@ class TiketAntrianScreen extends StatefulWidget {
 
 class _TiketAntrianScreenState extends State<TiketAntrianScreen> {
   final QueueService _queueService = QueueService();
-  QueueTicket? _ticket;
+  UpcomingQueue? _ticket;
   bool _isLoading = true;
+  String? _passedTicketNumber;
 
   @override
-  void initState() {
-    super.initState();
-    _fetchTicket();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Get ticket number from route arguments
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is String && _passedTicketNumber == null) {
+      _passedTicketNumber = args;
+      _fetchTicket(args);
+    } else if (args == null && _isLoading && _passedTicketNumber == null) {
+      // Fallback for demo if no args provided
+      _passedTicketNumber = 'A-042';
+      _fetchTicket('A-042');
+    }
   }
 
-  Future<void> _fetchTicket() async {
+  Future<void> _fetchTicket(String ticketNumber) async {
     setState(() => _isLoading = true);
     try {
-      final ticket = await _queueService.fetchTicket('A-042');
+      // Fetch from upcoming_queues table
+      final upcoming = await _queueService.fetchUpcomingQueues(AuthService.currentUser?.id ?? '');
+      final ticket = upcoming.firstWhere((t) => t.ticketNumber == ticketNumber);
+      
       setState(() {
         _ticket = ticket;
       });
@@ -91,7 +103,7 @@ class _TiketAntrianScreenState extends State<TiketAntrianScreen> {
 }
 
 class _TicketCard extends StatelessWidget {
-  final QueueTicket ticket;
+  final UpcomingQueue ticket;
   const _TicketCard({required this.ticket});
 
   @override
@@ -145,7 +157,7 @@ class _TicketCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _TicketDetail(label: 'Tanggal', value: ticket.dateLabel),
+                child: _TicketDetail(label: 'Tanggal', value: ticket.scheduleLabel),
               ),
               Expanded(
                 child: _TicketDetail(label: 'Pasien', value: ticket.patientName),

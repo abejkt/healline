@@ -27,7 +27,7 @@ class ActiveQueueStatus {
       statusLabel: map['status_label']?.toString() ?? '',
       poliName: map['poli_name']?.toString() ?? '',
       doctorName: map['doctor_name']?.toString() ?? '',
-      calledNumberLabel: map['called_number_label']?.toString() ?? '',
+      calledNumber_label: map['called_number_label']?.toString() ?? '',
       remainingCount: map['remaining_count'] is int
           ? map['remaining_count']
           : int.tryParse(map['remaining_count']?.toString() ?? '0') ?? 0,
@@ -44,7 +44,7 @@ class ActiveQueueStatus {
       'status_label': statusLabel,
       'poli_name': poliName,
       'doctor_name': doctorName,
-      'called_number_label': calledNumberLabel,
+      'called_number_label': ticketNumber, // Using ticket as placeholder for called
       'remaining_count': remainingCount,
       'eta_label': etaLabel,
       'progress_percent': progressPercent,
@@ -75,12 +75,16 @@ extension UpcomingQueueStatusLabel on UpcomingQueueStatus {
 class UpcomingQueue {
   final String ticketNumber;
   final String poliName;
+  final String doctorName;
+  final String patientName;
   final String scheduleLabel;
   final UpcomingQueueStatus status;
 
   const UpcomingQueue({
     required this.ticketNumber,
     required this.poliName,
+    required this.doctorName,
+    required this.patientName,
     required this.scheduleLabel,
     required this.status,
   });
@@ -89,6 +93,8 @@ class UpcomingQueue {
     return UpcomingQueue(
       ticketNumber: map['ticket_number']?.toString() ?? '',
       poliName: map['poli_name']?.toString() ?? '',
+      doctorName: map['doctor_name']?.toString() ?? '',
+      patientName: map['patient_name']?.toString() ?? '',
       scheduleLabel: map['schedule_label']?.toString() ?? '',
       status: UpcomingQueueStatusLabel.fromString(
           map['status']?.toString() ?? 'mendatang'),
@@ -99,6 +105,8 @@ class UpcomingQueue {
     return {
       'ticket_number': ticketNumber,
       'poli_name': poliName,
+      'doctor_name': doctorName,
+      'patient_name': patientName,
       'schedule_label': scheduleLabel,
       'status': status.name,
     };

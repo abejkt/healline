@@ -47,9 +47,9 @@ class QueueService {
     }
   }
 
-  Future<QueueTicket> createQueueTicket(Map<String, dynamic> queueData) async {
+  Future<UpcomingQueue> createUpcomingQueue(Map<String, dynamic> queueData) async {
     final response = await http.post(
-      Uri.parse('${ApiConfig.baseUrl}/queue_tickets'),
+      Uri.parse('${ApiConfig.baseUrl}/upcoming_queues'),
       headers: {
         ...ApiConfig.headers,
         'Prefer': 'return=representation',
@@ -59,9 +59,9 @@ class QueueService {
 
     if (response.statusCode == 201) {
       final List<dynamic> data = json.decode(response.body);
-      return QueueTicket.fromMap(data.first);
+      return UpcomingQueue.fromMap(data.first);
     } else {
-      throw Exception('Failed to create queue ticket: ${response.statusCode}');
+      throw Exception('Failed to create queue: ${response.statusCode}');
     }
   }
 }
