@@ -60,18 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
           _queueStatus = ticket.status.label;
           _queueDetail = '${ticket.poliName} · ${ticket.doctorName}';
         });
-
-        // Coba ambil info live (nomor yang sedang dipanggil) - Opsional
-        try {
-          final liveStatus = await _queueService.fetchActiveQueue(ticket.doctorName);
-          if (liveStatus != null) {
-            setState(() {
-              _queueDetail = '${ticket.poliName} · Sedang dipanggil: ${liveStatus.calledNumberLabel}';
-            });
-          }
-        } catch (_) {
-          // Abaikan jika info live belum tersedia
-        }
       } else {
         setState(() {
           _queueNumber = null;
