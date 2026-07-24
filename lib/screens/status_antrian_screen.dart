@@ -85,8 +85,7 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Batalkan antrian ini?'),
         content: const Text(
-          'Nomor antrian Anda akan dilepas dan diberikan kepada pasien '
-              'berikutnya. Tindakan ini tidak dapat dibatalkan.',
+          'Yakin Nomor antrian Anda akan dibatalkan ?',
         ),
         actions: [
           TextButton(
@@ -106,12 +105,37 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
     if (confirmed != true) return;
     if (!context.mounted) return;
 
-    // TODO: call the real "cancel queue" API here.
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      HomeScreen.routeName,
-          (route) => false,
+    if (_activeTicket == null) return;
+
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
     );
+
+    try {
+      await _queueService.cancelQueue(_activeTicket!.ticketNumber);
+      
+      if (!mounted) return;
+      Navigator.pop(context); // Dismiss loading
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Antrian berhasil dibatalkan')),
+      );
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        HomeScreen.routeName,
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context); // Dismiss loading
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal membatalkan antrian: $e')),
+      );
+    }
   }
 
   @override
@@ -240,9 +264,9 @@ class _ActiveQueueCard extends StatelessWidget {
                   color: AppColors.statusBadgeBg,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text(
-                  'Menunggu',
-                  style: TextStyle(
+                child: Text(
+                  ticket.status.label,
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: AppColors.statusBadgeText,

@@ -65,4 +65,27 @@ class QueueService {
       throw Exception('Failed to update last ticket: ${response.statusCode}');
     }
   }
+
+  Future<void> cancelQueue(String ticketNumber) async {
+    // 1. Update status to 'batal' in visits table
+    final visitResponse = await http.patch(
+      Uri.parse('${ApiConfig.baseUrl}/visits?queue_code=eq.$ticketNumber'),
+      headers: ApiConfig.headers,
+      body: json.encode({'status': 'batal'}),
+    );
+
+    if (visitResponse.statusCode != 200 && visitResponse.statusCode != 204) {
+      throw Exception('Failed to update visit status: ${visitResponse.statusCode}');
+    }
+
+    // 2. Delete from upcoming_queues table
+    final deleteResponse = await http.delete(
+      Uri.parse('${ApiConfig.baseUrl}/upcoming_queues?ticket_number=eq.$ticketNumber'),
+      headers: ApiConfig.headers,
+    );
+
+    if (deleteResponse.statusCode != 200 && deleteResponse.statusCode != 204) {
+      throw Exception('Failed to delete upcoming queue: ${deleteResponse.statusCode}');
+    }
+  }
 }
