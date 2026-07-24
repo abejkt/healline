@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/active_queue_status.dart';
+import '../models/active_queues.dart';
 import '../models/queue_ticket.dart';
 import 'api_config.dart';
 
 class QueueService {
-  Future<ActiveQueue?> fetchActiveQueues(String doctorName) async {
+  Future<ActiveQueue?> fetchActiveQueue(String doctorName) async {
     final encodedName = Uri.encodeComponent(doctorName);
     final response = await http.get(
       Uri.parse('${ApiConfig.baseUrl}/active_queues?doctor_name=eq.$encodedName&select=*'),

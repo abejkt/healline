@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/active_queue_status.dart';
+import '../models/active_queues.dart';
 import '../services/auth_service.dart';
 import '../services/queue_service.dart';
 import '../themes/app_theme.dart';

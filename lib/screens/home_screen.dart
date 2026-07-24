@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/date_formatter.dart';
 import '../services/auth_service.dart';
 import '../services/queue_service.dart';
-import '../models/active_queue_status.dart';
+import '../models/active_queues.dart';
 import '../themes/app_theme.dart';
 import 'ambil_antrian_screen.dart';
 import 'status_antrian_screen.dart';
