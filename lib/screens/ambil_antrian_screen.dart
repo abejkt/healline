@@ -191,9 +191,27 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
       final poli = _polis.firstWhere((p) => p.id == _selectedPoliId);
       final doctor = _doctors.firstWhere((d) => d.id == _selectedDoctorId);
       
-      final prefix = poli.name.contains('Umum') ? 'A' : (poli.name.contains('Anak') ? 'B' : 'C');
-      final randomNum = (DateTime.now().millisecondsSinceEpoch % 1000).toString().padLeft(3, '0');
-      final ticketNumber = '$prefix-$randomNum';
+      // 1. Get last ticket from active_queue_status
+      final liveStatus = await _queueService.fetchActiveQueue(doctor.name);
+      
+      String ticketNumber;
+      final prefix = doctor.doctorCode;
+      
+      if (liveStatus != null && liveStatus.lastTicketNumber.isNotEmpty) {
+        // Parse last number and increment (format expected: prefix-XXX)
+        final parts = liveStatus.lastTicketNumber.split('-');
+        int nextNum = 1;
+        if (parts.length > 1) {
+          nextNum = (int.tryParse(parts[1]) ?? 0) + 1;
+        }
+        ticketNumber = '$prefix-${nextNum.toString().padLeft(3, '0')}';
+      } else {
+        // Start from 001 if no record or empty
+        ticketNumber = '$prefix-001';
+      }
+
+      // 2. Update last_ticket_number in database
+      await _queueService.updateLastTicket(doctor.name, ticketNumber);
 
       final queueData = {
         'ticket_number': ticketNumber,

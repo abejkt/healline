@@ -17,7 +17,7 @@ class StatusAntrianScreen extends StatefulWidget {
 
 class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
   final QueueService _queueService = QueueService();
-  ActiveQueueStatus? _status;
+  ActiveQueue? _status;
   UpcomingQueue? _activeTicket;
   List<UpcomingQueue> _upcoming = [];
   bool _isLoading = true;
@@ -54,7 +54,7 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
       }
 
       // 3. Fetch status for the target ticket
-      ActiveQueueStatus? status;
+      ActiveQueue? status;
       if (targetTicket != null) {
         final myTicket = upcoming.firstWhere((t) => t.ticketNumber == targetTicket);
         status = await _queueService.fetchActiveQueue(myTicket.doctorName);
@@ -138,7 +138,7 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
           children: [
             if (_status != null && _activeTicket != null) ...[
-              _ActiveQueueStatusCard(status: _status!, ticket: _activeTicket!),
+              _ActiveQueueCard(status: _status!, ticket: _activeTicket!),
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -196,10 +196,10 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-class _ActiveQueueStatusCard extends StatelessWidget {
-  final ActiveQueueStatus status;
+class _ActiveQueueCard extends StatelessWidget {
+  final ActiveQueue status;
   final UpcomingQueue ticket;
-  const _ActiveQueueStatusCard({required this.status, required this.ticket});
+  const _ActiveQueueCard({required this.status, required this.ticket});
 
   @override
   Widget build(BuildContext context) {

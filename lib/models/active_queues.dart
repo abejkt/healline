@@ -1,18 +1,18 @@
-class ActiveQueueStatus {
+class ActiveQueue {
   final String doctorName;
   final String poliName;
   final String calledNumberLabel;
   final String lastTicketNumber;
 
-  const ActiveQueueStatus({
+  const ActiveQueue({
     required this.doctorName,
     required this.poliName,
     required this.calledNumberLabel,
     required this.lastTicketNumber,
   });
 
-  factory ActiveQueueStatus.fromMap(Map<String, dynamic> map) {
-    return ActiveQueueStatus(
+  factory ActiveQueue.fromMap(Map<String, dynamic> map) {
+    return ActiveQueue(
       doctorName: map['doctor_name']?.toString() ?? '',
       poliName: map['poli_name']?.toString() ?? '',
       calledNumberLabel: map['called_number_label']?.toString() ?? '',

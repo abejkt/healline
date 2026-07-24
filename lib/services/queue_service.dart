@@ -5,15 +5,16 @@ import '../models/queue_ticket.dart';
 import 'api_config.dart';
 
 class QueueService {
-  Future<ActiveQueueStatus?> fetchActiveQueue(String doctorName) async {
+  Future<ActiveQueue?> fetchActiveQueues(String doctorName) async {
+    final encodedName = Uri.encodeComponent(doctorName);
     final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/active_queue_status?doctor_name=eq.$doctorName&select=*'),
+      Uri.parse('${ApiConfig.baseUrl}/active_queues?doctor_name=eq.$encodedName&select=*'),
       headers: ApiConfig.headers,
     );
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      return data.isNotEmpty ? ActiveQueueStatus.fromMap(data.first) : null;
+      return data.isNotEmpty ? ActiveQueue.fromMap(data.first) : null;
     } else {
       throw Exception('Failed to load active queue: ${response.statusCode}');
     }
@@ -48,6 +49,20 @@ class QueueService {
       return UpcomingQueue.fromMap(data.first);
     } else {
       throw Exception('Failed to create queue: ${response.statusCode}');
+    }
+  }
+
+  Future<void> updateLastTicket(String doctorName, String newTicketNumber) async {
+    final response = await http.patch(
+      Uri.parse('${ApiConfig.baseUrl}/active_queues?doctor_name=eq.$doctorName'),
+      headers: ApiConfig.headers,
+      body: json.encode({
+        'last_ticket_number': newTicketNumber,
+      }),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception('Failed to update last ticket: ${response.statusCode}');
     }
   }
 }
