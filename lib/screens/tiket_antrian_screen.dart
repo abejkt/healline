@@ -31,8 +31,8 @@ class _TiketAntrianScreenState extends State<TiketAntrianScreen> {
       _fetchTicket(args);
     } else if (args == null && _isLoading && _passedTicketNumber == null) {
       // Fallback for demo if no args provided
-      _passedTicketNumber = 'A-042';
-      _fetchTicket('A-042');
+      _passedTicketNumber = '000';
+      _fetchTicket('000');
     }
   }
 
