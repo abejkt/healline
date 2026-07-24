@@ -6,7 +6,7 @@ import 'api_config.dart';
 class DoctorService {
   Future<List<Doctor>> fetchDoctors(String poliId) async {
     final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/doctors?poli_id=eq.$poliId&select=*'),
+      Uri.parse('${ApiConfig.baseUrl}/list_doctors?poli_id=eq.$poliId&select=*'),
       headers: ApiConfig.headers,
     );
 

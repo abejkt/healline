@@ -18,6 +18,7 @@ class StatusAntrianScreen extends StatefulWidget {
 class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
   final QueueService _queueService = QueueService();
   ActiveQueueStatus? _status;
+  UpcomingQueue? _activeTicket;
   List<UpcomingQueue> _upcoming = [];
   bool _isLoading = true;
   String? _passedTicketNumber;
@@ -55,13 +56,21 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
       // 3. Fetch status for the target ticket
       ActiveQueueStatus? status;
       if (targetTicket != null) {
-        status = await _queueService.fetchActiveQueue(targetTicket);
+        final myTicket = upcoming.firstWhere((t) => t.ticketNumber == targetTicket);
+        status = await _queueService.fetchActiveQueue(myTicket.doctorName);
+        
+        setState(() {
+          _status = status;
+          _upcoming = upcoming;
+          _activeTicket = myTicket;
+        });
+      } else {
+        setState(() {
+          _status = null;
+          _upcoming = upcoming;
+          _activeTicket = null;
+        });
       }
-      
-      setState(() {
-        _status = status;
-        _upcoming = upcoming;
-      });
     } catch (e) {
       debugPrint('Error fetching queue status: $e');
     } finally {
@@ -128,8 +137,8 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
           : ListView(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
           children: [
-            if (_status != null) ...[
-              _ActiveQueueStatusCard(status: _status!),
+            if (_status != null && _activeTicket != null) ...[
+              _ActiveQueueStatusCard(status: _status!, ticket: _activeTicket!),
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -189,7 +198,8 @@ class _SectionLabel extends StatelessWidget {
 
 class _ActiveQueueStatusCard extends StatelessWidget {
   final ActiveQueueStatus status;
-  const _ActiveQueueStatusCard({required this.status});
+  final UpcomingQueue ticket;
+  const _ActiveQueueStatusCard({required this.status, required this.ticket});
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +225,7 @@ class _ActiveQueueStatusCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                status.ticketNumber,
+                ticket.ticketNumber,
                 style: const TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.w800,
@@ -230,9 +240,9 @@ class _ActiveQueueStatusCard extends StatelessWidget {
                   color: AppColors.statusBadgeBg,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Text(
-                  status.statusLabel,
-                  style: const TextStyle(
+                child: const Text(
+                  'Menunggu',
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: AppColors.statusBadgeText,
@@ -263,42 +273,15 @@ class _ActiveQueueStatusCard extends StatelessWidget {
               _StatDivider(),
               Expanded(
                 child: _StatColumn(
-                  value: '${status.remainingCount}',
-                  label: 'Sisa antrian',
+                  value: ticket.ticketNumber,
+                  label: 'Nomor Anda',
                 ),
               ),
               _StatDivider(),
               Expanded(
                 child: _StatColumn(
-                  value: status.etaLabel,
+                  value: '-',
                   label: 'Estimasi',
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: LinearProgressIndicator(
-                    value: status.progressPercent,
-                    minHeight: 6,
-                    backgroundColor: AppColors.primaryBlue.withValues(alpha: 0.15),
-                    valueColor: const AlwaysStoppedAnimation(
-                      AppColors.primaryBlue,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                '${status.progressPercentLabel}% selesai',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.activeQueueText,
                 ),
               ),
             ],

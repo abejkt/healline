@@ -48,17 +48,36 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final upcoming = await _queueService.fetchUpcomingQueues(user.id);
       
-      if (upcoming.isNotEmpty) {
-        final ticket = upcoming.first;
-        final status = await _queueService.fetchActiveQueue(ticket.ticketNumber);
+      // Filter tiket untuk hari ini saja
+      final todayStr = DateFormatterId.formatDateId(DateTime.now());
+      final todayTickets = upcoming.where((t) => t.scheduleLabel == todayStr).toList();
+      
+      if (todayTickets.isNotEmpty) {
+        final ticket = todayTickets.first;
         
-        if (status != null) {
-          setState(() {
-            _queueNumber = status.ticketNumber;
-            _queueStatus = status.statusLabel;
-            _queueDetail = '${status.poliName} · ${status.etaLabel} · ${status.remainingCount} antrian lagi';
-          });
+        setState(() {
+          _queueNumber = ticket.ticketNumber;
+          _queueStatus = ticket.status.label;
+          _queueDetail = '${ticket.poliName} · ${ticket.doctorName}';
+        });
+
+        // Coba ambil info live (nomor yang sedang dipanggil) - Opsional
+        try {
+          final liveStatus = await _queueService.fetchActiveQueue(ticket.doctorName);
+          if (liveStatus != null) {
+            setState(() {
+              _queueDetail = '${ticket.poliName} · Sedang dipanggil: ${liveStatus.calledNumberLabel}';
+            });
+          }
+        } catch (_) {
+          // Abaikan jika info live belum tersedia
         }
+      } else {
+        setState(() {
+          _queueNumber = null;
+          _queueStatus = null;
+          _queueDetail = null;
+        });
       }
     } catch (e) {
       debugPrint('Error fetching active queue on home: $e');
@@ -255,7 +274,7 @@ class _ActiveQueueCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Antrian aktif hari ini',
+            'Tiket Antrian Anda Hari ini',
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,

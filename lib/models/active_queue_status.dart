@@ -21,7 +21,7 @@ class ActiveQueueStatus {
     return {
       'poli_name': poliName,
       'doctor_name': doctorName,
-      'called_number_label': ticketNumber,
+      'called_number_label': calledNumberLabel,
     };
   }
 }
@@ -70,8 +70,7 @@ class UpcomingQueue {
       doctorName: map['doctor_name']?.toString() ?? '',
       patientName: map['patient_name']?.toString() ?? '',
       scheduleLabel: map['schedule_label']?.toString() ?? '',
-      status: UpcomingQueueStatusLabel.fromString(
-          map['status']?.toString() ?? 'mendatang'),
+      status: UpcomingQueueStatusLabel.fromString(map['status']?.toString() ?? 'mendatang'),
     );
   }
 

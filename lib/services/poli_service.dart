@@ -6,7 +6,7 @@ import 'api_config.dart';
 class PoliService {
   Future<List<Poli>> fetchPolis() async {
     final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/polis?select=*'),
+      Uri.parse('${ApiConfig.baseUrl}/list_polis?select=*'),
       headers: ApiConfig.headers,
     );
 

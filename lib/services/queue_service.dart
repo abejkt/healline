@@ -5,9 +5,9 @@ import '../models/queue_ticket.dart';
 import 'api_config.dart';
 
 class QueueService {
-  Future<ActiveQueueStatus?> fetchActiveQueue(String ticketNumber) async {
+  Future<ActiveQueueStatus?> fetchActiveQueue(String doctorName) async {
     final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/active_queue_status?ticket_number=eq.$ticketNumber&select=*'),
+      Uri.parse('${ApiConfig.baseUrl}/active_queue_status?doctor_name=eq.$doctorName&select=*'),
       headers: ApiConfig.headers,
     );
 
@@ -30,20 +30,6 @@ class QueueService {
       return data.map((json) => UpcomingQueue.fromMap(json)).toList();
     } else {
       throw Exception('Failed to load upcoming queues: ${response.statusCode}');
-    }
-  }
-
-  Future<QueueTicket?> fetchTicket(String ticketNumber) async {
-    final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/queue_tickets?ticket_number=eq.$ticketNumber&select=*'),
-      headers: ApiConfig.headers,
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.isNotEmpty ? QueueTicket.fromMap(data.first) : null;
-    } else {
-      throw Exception('Failed to load ticket: ${response.statusCode}');
     }
   }
 
