@@ -21,4 +21,32 @@ class UserService {
       throw Exception('Failed to load user profile: ${response.statusCode}');
     }
   }
+
+  Future<void> updatePhoneNumber(String userId, String newPhone) async {
+    final response = await http.patch(
+      Uri.parse('${ApiConfig.baseUrl}/user_profiles?id=eq.$userId'),
+      headers: ApiConfig.headers,
+      body: json.encode({
+        'phone_masked': newPhone,
+      }),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception('Failed to update phone number: ${response.statusCode}');
+    }
+  }
+
+  Future<void> updateEmail(String userId, String newEmail) async {
+    final response = await http.patch(
+      Uri.parse('${ApiConfig.baseUrl}/user_profiles?id=eq.$userId'),
+      headers: ApiConfig.headers,
+      body: json.encode({
+        'email': newEmail,
+      }),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception('Failed to update email: ${response.statusCode}');
+    }
+  }
 }

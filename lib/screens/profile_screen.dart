@@ -7,7 +7,8 @@ import 'welcome_screen.dart';
 import 'home_screen.dart';
 import 'ambil_antrian_screen.dart';
 import 'riwayat_screen.dart';
-
+import 'change_phone_screen.dart';
+import 'change_email_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = '/profile';
@@ -271,7 +272,7 @@ class _AccountInfoCard extends StatelessWidget {
             label: 'Nomor HP',
             value: user.phoneMasked,
             onTap: () {
-              // TODO: navigate ke menu ganti nomor telp
+              Navigator.pushNamed(context, ChangePhoneScreen.routeName);
             },
           ),
           const Divider(height: 1, indent: 64, endIndent: 16),
@@ -280,7 +281,7 @@ class _AccountInfoCard extends StatelessWidget {
             label: 'Email',
             value: user.email,
             onTap: () {
-              // TODO: navigate ke menu ganti email
+              Navigator.pushNamed(context, ChangeEmailScreen.routeName);
             },
           ),
         ],

@@ -12,6 +12,8 @@ import 'screens/tiket_antrian_screen.dart';
 import 'screens/status_antrian_screen.dart';
 import 'screens/riwayat_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/change_phone_screen.dart';
+import 'screens/change_email_screen.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -49,6 +51,8 @@ class HealLineApp extends StatelessWidget {
         AmbilAntrianScreen.routeName: (_) => const AmbilAntrianScreen(),
         TiketAntrianScreen.routeName: (_) => const TiketAntrianScreen(),
         StatusAntrianScreen.routeName: (_) => const StatusAntrianScreen(),
+        ChangePhoneScreen.routeName: (_) => const ChangePhoneScreen(),
+        ChangeEmailScreen.routeName: (_) => const ChangeEmailScreen(),
       },
     );
   }
