@@ -40,7 +40,7 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
   List<Poli> _polis = [];
   List<Doctor> _doctors = [];
   List<Patient> _availablePatients = [];
-  Map<String, int?> _doctorQuotas = {}; // To store dynamic quotas
+  Map<String, int?> _doctorQuotas = {};
   
   bool _isLoadingPolis = true;
   bool _isLoadingDoctors = false;
@@ -97,12 +97,11 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
 
     try {
       final doctors = await _doctorService.fetchDoctors(_selectedPoliId!);
-      await _fetchQuotas(); // Fetch dynamic quotas
+      await _fetchQuotas();
       
       setState(() {
         _doctors = doctors;
         final available = doctors.where((d) {
-          // If no row in active_queues (null), treat as 0 quota
           final q = _doctorQuotas[d.name] ?? 0;
           return q > 0;
         }).toList();
@@ -149,7 +148,7 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
     );
     if (picked != null) {
       setState(() => _selectedDate = picked);
-      _fetchDoctors(); // Refetch doctors and quotas for new date
+      _fetchDoctors();
     }
   }
 
@@ -206,7 +205,6 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
     final user = AuthService.currentUser;
     if (user == null) return;
 
-    // Show loading dialog
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -218,7 +216,6 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
       final doctor = _doctors.firstWhere((d) => d.id == _selectedDoctorId);
       final dateIso = _selectedDate.toIso8601String().split('T')[0];
       
-      // 1. Get last ticket from active_queue_status for selected date
       final liveStatus = await _queueService.fetchActiveQueue(doctor.name, dateIso);
       
       String ticketNumber;
@@ -226,7 +223,6 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
       final prefix = doctor.doctorCode;
       
       if (liveStatus != null) {
-        // Parse last number and increment (format expected: prefix-XXX)
         final lastTicket = liveStatus.lastTicketNumber;
         int nextNum = 1;
         if (lastTicket.isNotEmpty) {
@@ -239,12 +235,10 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
         newQuota = (liveStatus.quota ?? 0) - 1;
         if (newQuota < 0) newQuota = 0;
       } else {
-        // Start from 001 if no record
         ticketNumber = '$prefix-001';
-        newQuota = 0; // Should not happen based on your requirement
+        newQuota = 0;
       }
 
-      // 2. Update last_ticket_number and decrement quota in database for selected date
       await _queueService.updateLastTicket(doctor.name, dateIso, ticketNumber, newQuota);
 
       final queueData = {
@@ -259,7 +253,6 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
 
       final ticket = await _queueService.createUpcomingQueue(queueData);
 
-      // Create a record in the visits table as well
       final visitData = {
         'user_id': user.id,
         'poli': poli.name,
@@ -271,9 +264,8 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
       await _visitService.createVisit(visitData);
 
       if (!mounted) return;
-      Navigator.pop(context); // Dismiss loading dialog
+      Navigator.pop(context);
 
-      // Navigate to ticket screen with the real ticket number
       Navigator.pushNamed(
         context, 
         TiketAntrianScreen.routeName, 
@@ -281,7 +273,7 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
       );
     } catch (e) {
       if (!mounted) return;
-      Navigator.pop(context); // Dismiss loading dialog
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Gagal mengambil antrian: $e')),
       );
@@ -580,7 +572,6 @@ class _DoctorTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // If no row in active_queues (null), treat as 0 quota
     final int currentQuota = quota ?? 0;
     final bool isAvailable = currentQuota > 0;
     final String quotaLabel = isAvailable 

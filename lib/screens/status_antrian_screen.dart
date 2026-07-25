@@ -45,16 +45,13 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
 
     setState(() => _isLoading = true);
     try {
-      // 1. Fetch all upcoming queues for user
       final upcoming = await _queueService.fetchUpcomingQueues(user.id);
       
-      // 2. Determine which ticket to show as "Active"
       String? targetTicket = _passedTicketNumber;
       if (targetTicket == null && upcoming.isNotEmpty) {
         targetTicket = upcoming.first.ticketNumber;
       }
 
-      // 3. Fetch status for the target ticket
       ActiveQueue? status;
       UpcomingQueue? myTicket;
       if (targetTicket != null) {
@@ -110,7 +107,6 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
 
     if (_activeTicket == null) return;
 
-    // Show loading indicator
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -121,7 +117,7 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
       await _queueService.cancelQueue(_activeTicket!.ticketNumber);
       
       if (!mounted) return;
-      Navigator.pop(context); // Dismiss loading
+      Navigator.pop(context);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Antrian berhasil dibatalkan')),
@@ -134,7 +130,7 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
       );
     } catch (e) {
       if (!mounted) return;
-      Navigator.pop(context); // Dismiss loading
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Gagal membatalkan antrian: $e')),
       );

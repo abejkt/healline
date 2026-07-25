@@ -25,13 +25,11 @@ class _TiketAntrianScreenState extends State<TiketAntrianScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Get ticket number from route arguments
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is String && _passedTicketNumber == null) {
       _passedTicketNumber = args;
       _fetchTicket(args);
     } else if (args == null && _isLoading && _passedTicketNumber == null) {
-      // Fallback for demo if no args provided
       _passedTicketNumber = '000';
       _fetchTicket('000');
     }
@@ -40,7 +38,6 @@ class _TiketAntrianScreenState extends State<TiketAntrianScreen> {
   Future<void> _fetchTicket(String ticketNumber) async {
     setState(() => _isLoading = true);
     try {
-      // Fetch from upcoming_queues table
       final upcoming = await _queueService.fetchUpcomingQueues(AuthService.currentUser?.id ?? '');
       final ticket = upcoming.firstWhere((t) => t.ticketNumber == ticketNumber);
       

@@ -51,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final upcoming = await _queueService.fetchUpcomingQueues(user.id);
       
-      // Filter tiket untuk hari ini saja
       final now = DateTime.now();
       final todayTickets = upcoming.where((t) => 
         t.scheduleDate.year == now.year && 
@@ -68,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
           _queueDetail = '${ticket.poliName} · ${ticket.doctorName}';
         });
 
-        // Coba ambil info live (nomor yang sedang dipanggil) - Opsional
         try {
           final dateIso = ticket.scheduleDate.toIso8601String().split('T')[0];
           final liveStatus = await _queueService.fetchActiveQueue(ticket.doctorName, dateIso);
@@ -77,8 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
               _queueDetail = '${ticket.poliName} · Sedang dipanggil: ${liveStatus.calledNumberLabel}';
             });
           }
-        } catch (_) {
-          // Abaikan jika info live belum tersedia
+        } catch (e) {
+          debugPrint('Error fetching live status: $e');
         }
       } else {
         setState(() {
