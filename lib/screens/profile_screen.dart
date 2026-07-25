@@ -9,6 +9,7 @@ import 'ambil_antrian_screen.dart';
 import 'riwayat_screen.dart';
 import 'change_phone_screen.dart';
 import 'change_email_screen.dart';
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = '/profile';
@@ -49,7 +50,7 @@ class ProfileScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.edit_outlined),
             onPressed: () {
-              // TODO: navigate ke menu edit profile
+              Navigator.pushNamed(context, EditProfileScreen.routeName);
             },
           ),
         ],

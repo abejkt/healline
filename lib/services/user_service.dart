@@ -49,4 +49,18 @@ class UserService {
       throw Exception('Failed to update email: ${response.statusCode}');
     }
   }
+
+  Future<void> updateNIK(String userId, String newNIK) async {
+    final response = await http.patch(
+      Uri.parse('${ApiConfig.baseUrl}/user_profiles?id=eq.$userId'),
+      headers: ApiConfig.headers,
+      body: json.encode({
+        'nik_masked': newNIK,
+      }),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception('Failed to update NIK: ${response.statusCode}');
+    }
+  }
 }

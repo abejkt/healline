@@ -12,6 +12,7 @@ import 'screens/tiket_antrian_screen.dart';
 import 'screens/status_antrian_screen.dart';
 import 'screens/riwayat_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/edit_profile_screen.dart';
 import 'screens/change_phone_screen.dart';
 import 'screens/change_email_screen.dart';
 
@@ -47,6 +48,7 @@ class HealLineApp extends StatelessWidget {
         OtpScreen.routeName: (_) => const OtpScreen(),
         HomeScreen.routeName: (_) => const HomeScreen(),
         ProfileScreen.routeName: (_) => const ProfileScreen(),
+        EditProfileScreen.routeName: (_) => const EditProfileScreen(),
         RiwayatScreen.routeName: (_) => const RiwayatScreen(),
         AmbilAntrianScreen.routeName: (_) => const AmbilAntrianScreen(),
         TiketAntrianScreen.routeName: (_) => const TiketAntrianScreen(),
