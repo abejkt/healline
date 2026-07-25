@@ -32,7 +32,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // TODO: Call your backend service to send reset link/OTP
       await Future.delayed(const Duration(seconds: 2));
 
       if (!mounted) return;
