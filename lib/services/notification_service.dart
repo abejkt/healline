@@ -15,7 +15,7 @@ class NotificationService {
       android: initializationSettingsAndroid,
     );
 
-    await _notificationsPlugin.initialize(initializationSettings);
+    await _notificationsPlugin.initialize(settings: initializationSettings);
 
     await _notificationsPlugin
         .resolvePlatformSpecificImplementation<
@@ -42,6 +42,11 @@ class NotificationService {
       android: androidPlatformChannelSpecifics,
     );
 
-    await _notificationsPlugin.show(id, title, body, platformChannelSpecifics);
+    await _notificationsPlugin.show(
+      id: id,
+      title: title,
+      body: body,
+      notificationDetails: platformChannelSpecifics,
+    );
   }
 }
