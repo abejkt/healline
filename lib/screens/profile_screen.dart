@@ -10,12 +10,18 @@ import 'riwayat_screen.dart';
 import 'change_phone_screen.dart';
 import 'change_email_screen.dart';
 import 'edit_profile_screen.dart';
+import 'add_family_member_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile';
 
   const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final UserProfile? user = AuthService.currentUser;
@@ -49,8 +55,9 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_outlined),
-            onPressed: () {
-              Navigator.pushNamed(context, EditProfileScreen.routeName);
+            onPressed: () async {
+              await Navigator.pushNamed(context, EditProfileScreen.routeName);
+              if (mounted) setState(() {});
             },
           ),
         ],
@@ -63,15 +70,16 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 24),
             const _SectionLabel('INFORMASI AKUN'),
             const SizedBox(height: 12),
-            _AccountInfoCard(user: user),
+            _AccountInfoCard(user: user, onUpdate: () => setState(() {})),
             const SizedBox(height: 24),
             const _SectionLabel('ANGGOTA KELUARGA'),
             const SizedBox(height: 12),
             _FamilyMembersCard(members: user.familyMembers),
             const SizedBox(height: 16),
             OutlinedButton(
-              onPressed: () {
-                // TODO: navigate ke tambah family
+              onPressed: () async {
+                await Navigator.pushNamed(context, AddFamilyMemberScreen.routeName);
+                if (mounted) setState(() {});
               },
               child: const Text('+ Tambah anggota keluarga'),
             ),
@@ -257,7 +265,8 @@ class _SectionLabel extends StatelessWidget {
 
 class _AccountInfoCard extends StatelessWidget {
   final UserProfile user;
-  const _AccountInfoCard({required this.user});
+  final VoidCallback onUpdate;
+  const _AccountInfoCard({required this.user, required this.onUpdate});
 
   @override
   Widget build(BuildContext context) {
@@ -272,8 +281,9 @@ class _AccountInfoCard extends StatelessWidget {
             icon: Icons.phone_iphone,
             label: 'Nomor HP',
             value: user.maskedPhone,
-            onTap: () {
-              Navigator.pushNamed(context, ChangePhoneScreen.routeName);
+            onTap: () async {
+              await Navigator.pushNamed(context, ChangePhoneScreen.routeName);
+              onUpdate();
             },
           ),
           const Divider(height: 1, indent: 64, endIndent: 16),
@@ -281,8 +291,9 @@ class _AccountInfoCard extends StatelessWidget {
             icon: Icons.mail_outline,
             label: 'Email',
             value: user.maskedEmail,
-            onTap: () {
-              Navigator.pushNamed(context, ChangeEmailScreen.routeName);
+            onTap: () async {
+              await Navigator.pushNamed(context, ChangeEmailScreen.routeName);
+              onUpdate();
             },
           ),
         ],

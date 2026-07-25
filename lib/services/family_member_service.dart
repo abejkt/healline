@@ -17,4 +17,19 @@ class FamilyMemberService {
       throw Exception('Failed to load family members: ${response.statusCode}');
     }
   }
+
+  Future<void> addFamilyMember(String userId, Map<String, dynamic> memberData) async {
+    final response = await http.post(
+      Uri.parse('${ApiConfig.baseUrl}/family_members'),
+      headers: ApiConfig.headers,
+      body: json.encode({
+        ...memberData,
+        'user_id': userId,
+      }),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to add family member: ${response.statusCode}');
+    }
+  }
 }
