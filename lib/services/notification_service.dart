@@ -16,6 +16,11 @@ class NotificationService {
     );
 
     await _notificationsPlugin.initialize(initializationSettings);
+
+    await _notificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
   }
 
   Future<void> showNotification({

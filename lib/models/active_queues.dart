@@ -58,8 +58,9 @@ extension UpcomingQueueStatusLabel on UpcomingQueueStatus {
   }
 
   static UpcomingQueueStatus fromString(String status) {
+    final lowerStatus = status.toLowerCase();
     return UpcomingQueueStatus.values.firstWhere(
-      (e) => e.name == status,
+      (e) => e.name.toLowerCase() == lowerStatus,
       orElse: () => UpcomingQueueStatus.mendatang,
     );
   }
