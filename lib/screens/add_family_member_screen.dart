@@ -61,7 +61,6 @@ class _AddFamilyMemberScreenState extends State<AddFamilyMemberScreen> {
 
       await _familyMemberService.addFamilyMember(user.id, memberData);
 
-      // Refresh user profile to get updated family members list
       final updatedUser = await _userService.fetchUserProfile(user.id);
       AuthService.currentUser = updatedUser;
 

@@ -64,7 +64,6 @@ class _FamilyMemberDetailScreenState extends State<FamilyMemberDetailScreen> {
 
       await _familyMemberService.updateFamilyMember(_member.id, memberData);
 
-      // Refresh user profile to get updated family members list
       final updatedUser = await _userService.fetchUserProfile(user.id);
       AuthService.currentUser = updatedUser;
 
@@ -110,7 +109,6 @@ class _FamilyMemberDetailScreenState extends State<FamilyMemberDetailScreen> {
     try {
       await _familyMemberService.deleteFamilyMember(_member.id);
 
-      // Refresh user profile
       final updatedUser = await _userService.fetchUserProfile(user.id);
       AuthService.currentUser = updatedUser;
 
