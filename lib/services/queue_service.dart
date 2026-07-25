@@ -82,7 +82,6 @@ class QueueService {
   }
 
   Future<void> cancelQueue(String ticketNumber) async {
-    // 1. Update status to 'batal' in visits table
     final visitResponse = await http.patch(
       Uri.parse('${ApiConfig.baseUrl}/visits?queue_code=eq.$ticketNumber'),
       headers: ApiConfig.headers,
@@ -93,7 +92,6 @@ class QueueService {
       throw Exception('Failed to update visit status: ${visitResponse.statusCode}');
     }
 
-    // 2. Delete from upcoming_queues table
     final deleteResponse = await http.delete(
       Uri.parse('${ApiConfig.baseUrl}/upcoming_queues?ticket_number=eq.$ticketNumber'),
       headers: ApiConfig.headers,
