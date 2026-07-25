@@ -27,7 +27,6 @@ class Doctor {
   final String initials;
   final String doctorCode;
   final Color avatarColor;
-  final int? quotaRemaining;
   final DoctorAvailability availability;
 
   const Doctor({
@@ -37,14 +36,8 @@ class Doctor {
     required this.initials,
     required this.doctorCode,
     required this.avatarColor,
-    required this.quotaRemaining,
     required this.availability,
   });
-
-  bool get isAvailable => availability == DoctorAvailability.tersedia;
-
-  String get quotaLabel =>
-      isAvailable ? 'Kuota tersisa: $quotaRemaining' : 'Kuota penuh';
 
   factory Doctor.fromMap(Map<String, dynamic> map) {
     Color parseColor(dynamic value) {
@@ -65,9 +58,6 @@ class Doctor {
       initials: map['initials']?.toString() ?? '?',
       doctorCode: map['doctor_code']?.toString() ?? '',
       avatarColor: parseColor(map['avatar_color']),
-      quotaRemaining: map['quota_remaining'] is int
-          ? map['quota_remaining']
-          : int.tryParse(map['quota_remaining']?.toString() ?? ''),
       availability: DoctorAvailabilityLabel.fromString(
           map['availability']?.toString() ?? 'tersedia'),
     );
@@ -81,7 +71,6 @@ class Doctor {
       'initials': initials,
       'doctor_code': doctorCode,
       'avatar_color': avatarColor.toARGB32().toString(),
-      'quota_remaining': quotaRemaining,
       'availability': availability.name,
     };
   }
