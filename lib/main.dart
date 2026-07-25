@@ -4,6 +4,7 @@ import 'themes/app_theme.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/forgot_password_screen.dart';
 import 'screens/otp_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/ambil_antrian_screen.dart';
@@ -40,6 +41,7 @@ class HealLineApp extends StatelessWidget {
         WelcomeScreen.routeName: (_) => const WelcomeScreen(),
         LoginScreen.routeName: (_) => const LoginScreen(),
         RegisterScreen.routeName: (_) => const RegisterScreen(),
+        ForgotPasswordScreen.routeName: (_) => const ForgotPasswordScreen(),
         OtpScreen.routeName: (_) => const OtpScreen(),
         HomeScreen.routeName: (_) => const HomeScreen(),
         ProfileScreen.routeName: (_) => const ProfileScreen(),

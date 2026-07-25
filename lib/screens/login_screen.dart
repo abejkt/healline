@@ -5,6 +5,7 @@ import '../services/auth_service.dart';
 import 'otp_screen.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -141,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    // TODO: navigate menu lupa password
+                    Navigator.pushNamed(context, ForgotPasswordScreen.routeName);
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,

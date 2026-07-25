@@ -311,6 +311,10 @@ class _ActiveQueueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isAktif = status.toLowerCase() == 'aktif';
+    final Color badgeBg = isAktif ? const Color(0xFFD9F0DE) : AppColors.statusBadgeBg;
+    final Color badgeText = isAktif ? AppColors.successGreen : AppColors.statusBadgeText;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -345,15 +349,15 @@ class _ActiveQueueCard extends StatelessWidget {
                 padding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 decoration: BoxDecoration(
-                  color: AppColors.statusBadgeBg,
+                  color: badgeBg,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   status,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.statusBadgeText,
+                    color: badgeText,
                   ),
                 ),
               ),
