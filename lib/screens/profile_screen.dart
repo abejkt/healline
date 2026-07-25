@@ -11,6 +11,7 @@ import 'change_phone_screen.dart';
 import 'change_email_screen.dart';
 import 'edit_profile_screen.dart';
 import 'add_family_member_screen.dart';
+import 'family_member_detail_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile';
@@ -74,7 +75,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 24),
             const _SectionLabel('ANGGOTA KELUARGA'),
             const SizedBox(height: 12),
-            _FamilyMembersCard(members: user.familyMembers),
+            _FamilyMembersCard(
+              members: user.familyMembers,
+              onUpdate: () => setState(() {}),
+            ),
             const SizedBox(height: 16),
             OutlinedButton(
               onPressed: () async {
@@ -366,7 +370,8 @@ class _InfoTile extends StatelessWidget {
 
 class _FamilyMembersCard extends StatelessWidget {
   final List<FamilyMember> members;
-  const _FamilyMembersCard({required this.members});
+  final VoidCallback onUpdate;
+  const _FamilyMembersCard({required this.members, required this.onUpdate});
 
   @override
   Widget build(BuildContext context) {
@@ -378,7 +383,7 @@ class _FamilyMembersCard extends StatelessWidget {
       child: Column(
         children: [
           for (int i = 0; i < members.length; i++) ...[
-            _FamilyMemberTile(member: members[i]),
+            _FamilyMemberTile(member: members[i], onUpdate: onUpdate),
             if (i != members.length - 1)
               const Divider(height: 1, indent: 64, endIndent: 16),
           ],
@@ -390,13 +395,19 @@ class _FamilyMembersCard extends StatelessWidget {
 
 class _FamilyMemberTile extends StatelessWidget {
   final FamilyMember member;
-  const _FamilyMemberTile({required this.member});
+  final VoidCallback onUpdate;
+  const _FamilyMemberTile({required this.member, required this.onUpdate});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        // TODO: navigate ke menu detail family
+      onTap: () async {
+        await Navigator.pushNamed(
+          context,
+          FamilyMemberDetailScreen.routeName,
+          arguments: member,
+        );
+        onUpdate();
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

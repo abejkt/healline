@@ -32,4 +32,27 @@ class FamilyMemberService {
       throw Exception('Failed to add family member: ${response.statusCode}');
     }
   }
+
+  Future<void> updateFamilyMember(String memberId, Map<String, dynamic> memberData) async {
+    final response = await http.patch(
+      Uri.parse('${ApiConfig.baseUrl}/family_members?id=eq.$memberId'),
+      headers: ApiConfig.headers,
+      body: json.encode(memberData),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception('Failed to update family member: ${response.statusCode}');
+    }
+  }
+
+  Future<void> deleteFamilyMember(String memberId) async {
+    final response = await http.delete(
+      Uri.parse('${ApiConfig.baseUrl}/family_members?id=eq.$memberId'),
+      headers: ApiConfig.headers,
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception('Failed to delete family member: ${response.statusCode}');
+    }
+  }
 }
