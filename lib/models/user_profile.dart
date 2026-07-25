@@ -23,6 +23,19 @@ class UserProfile {
     required this.familyMembers,
   });
 
+  String get maskedPhone {
+    if (phoneMasked.length < 8) return phoneMasked;
+    return phoneMasked.replaceRange(4, phoneMasked.length - 4, '*' * (phoneMasked.length - 8));
+  }
+
+  String get maskedEmail {
+    if (!email.contains('@')) return email;
+    final parts = email.split('@');
+    final name = parts[0];
+    if (name.length <= 2) return email;
+    return '${name[0]}${'*' * (name.length - 2)}${name[name.length - 1]}@${parts[1]}';
+  }
+
   factory UserProfile.fromMap(Map<String, dynamic> map) {
     return UserProfile(
       id: map['id']?.toString() ?? '',

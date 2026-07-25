@@ -270,7 +270,7 @@ class _AccountInfoCard extends StatelessWidget {
           _InfoTile(
             icon: Icons.phone_iphone,
             label: 'Nomor HP',
-            value: user.phoneMasked,
+            value: user.maskedPhone,
             onTap: () {
               Navigator.pushNamed(context, ChangePhoneScreen.routeName);
             },
@@ -279,7 +279,7 @@ class _AccountInfoCard extends StatelessWidget {
           _InfoTile(
             icon: Icons.mail_outline,
             label: 'Email',
-            value: user.email,
+            value: user.maskedEmail,
             onTap: () {
               Navigator.pushNamed(context, ChangeEmailScreen.routeName);
             },

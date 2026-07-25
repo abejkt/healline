@@ -13,19 +13,15 @@ class ChangeEmailScreen extends StatefulWidget {
 }
 
 class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
-  final _emailController = TextEditingController();
+  final _oldEmailController = TextEditingController();
+  final _newEmailController = TextEditingController();
   final _userService = UserService();
   bool _isLoading = false;
 
   @override
-  void initState() {
-    super.initState();
-    _emailController.text = AuthService.currentUser?.email ?? '';
-  }
-
-  @override
   void dispose() {
-    _emailController.dispose();
+    _oldEmailController.dispose();
+    _newEmailController.dispose();
     super.dispose();
   }
 
@@ -33,18 +29,26 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
     final user = AuthService.currentUser;
     if (user == null) return;
 
-    final newEmail = _emailController.text.trim();
+    final oldEmailInput = _oldEmailController.text.trim();
+    final newEmailInput = _newEmailController.text.trim();
     
-    if (newEmail == user.email) {
+    if (oldEmailInput != user.email) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Email lama yang Anda masukkan salah')),
+      );
+      return;
+    }
+
+    if (newEmailInput == user.email) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Email baru tidak boleh sama dengan email lama')),
       );
       return;
     }
 
-    if (newEmail.isEmpty || !newEmail.contains('@')) {
+    if (newEmailInput.isEmpty || !newEmailInput.contains('@')) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Masukkan alamat email yang valid')),
+        const SnackBar(content: Text('Masukkan alamat email baru yang valid')),
       );
       return;
     }
@@ -52,7 +56,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await _userService.updateEmail(user.id, newEmail);
+      await _userService.updateEmail(user.id, newEmailInput);
       
       final updatedUser = await _userService.fetchUserProfile(user.id);
       AuthService.currentUser = updatedUser;
@@ -79,33 +83,39 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
         title: const Text('Ganti Email'),
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Email digunakan untuk mengirimkan notifikasi dan rekap riwayat kunjungan Anda.',
+                'Konfirmasikan email lama Anda sebelum melakukan perubahan.',
                 style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
               ),
               const SizedBox(height: 32),
-              const Text(
-                'EMAIL BARU',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
-                ),
-              ),
+              
+              const _FieldLabel('EMAIL LAMA'),
               const SizedBox(height: 8),
               TextField(
-                controller: _emailController,
+                controller: _oldEmailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  hintText: 'Masukkan email lama Anda',
+                ),
+              ),
+              const SizedBox(height: 24),
+              
+              const _FieldLabel('EMAIL BARU'),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _newEmailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   hintText: 'contoh@email.com',
                 ),
               ),
-              const Spacer(),
+              const SizedBox(height: 48),
+              
               ElevatedButton(
                 onPressed: _isLoading ? null : _updateEmail,
                 child: _isLoading 
@@ -115,6 +125,23 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _FieldLabel extends StatelessWidget {
+  final String text;
+  const _FieldLabel(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textSecondary,
       ),
     );
   }
