@@ -52,8 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
       final upcoming = await _queueService.fetchUpcomingQueues(user.id);
       
       // Filter tiket untuk hari ini saja
-      final todayStr = DateFormatterId.formatDateId(DateTime.now());
-      final todayTickets = upcoming.where((t) => t.scheduleLabel == todayStr).toList();
+      final now = DateTime.now();
+      final todayTickets = upcoming.where((t) => 
+        t.scheduleDate.year == now.year && 
+        t.scheduleDate.month == now.month && 
+        t.scheduleDate.day == now.day
+      ).toList();
       
       if (todayTickets.isNotEmpty) {
         final ticket = todayTickets.first;
@@ -66,7 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // Coba ambil info live (nomor yang sedang dipanggil) - Opsional
         try {
-          final liveStatus = await _queueService.fetchActiveQueue(ticket.doctorName);
+          final dateIso = ticket.scheduleDate.toIso8601String().split('T')[0];
+          final liveStatus = await _queueService.fetchActiveQueue(ticket.doctorName, dateIso);
           if (liveStatus != null) {
             setState(() {
               _queueDetail = '${ticket.poliName} · Sedang dipanggil: ${liveStatus.calledNumberLabel}';

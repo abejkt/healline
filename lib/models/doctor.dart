@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-enum DoctorAvailability { tersedia, penuh }
+enum DoctorAvailability { tersedia, tidaktersedia }
 
 extension DoctorAvailabilityLabel on DoctorAvailability {
   String get label {
     switch (this) {
       case DoctorAvailability.tersedia:
         return 'Tersedia';
-      case DoctorAvailability.penuh:
-        return 'Penuh';
+      case DoctorAvailability.tidaktersedia:
+        return 'Tidak Tersedia';
     }
   }
 

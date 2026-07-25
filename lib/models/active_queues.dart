@@ -18,7 +18,7 @@ class ActiveQueue {
   bool get isAvailable => quota == null || quota! > 0;
 
   String get quotaLabel =>
-      isAvailable ? 'Kuota tersisa: $quota' : 'Kuota penuh';
+      isAvailable ? 'Kuota Tersedia: $quota' : 'Kuota Tidak Tersedia';
 
   factory ActiveQueue.fromMap(Map<String, dynamic> map) {
     return ActiveQueue(
@@ -70,7 +70,7 @@ class UpcomingQueue {
   final String poliName;
   final String doctorName;
   final String patientName;
-  final String scheduleLabel;
+  final DateTime scheduleDate;
   final UpcomingQueueStatus status;
 
   const UpcomingQueue({
@@ -78,7 +78,7 @@ class UpcomingQueue {
     required this.poliName,
     required this.doctorName,
     required this.patientName,
-    required this.scheduleLabel,
+    required this.scheduleDate,
     required this.status,
   });
 
@@ -88,7 +88,7 @@ class UpcomingQueue {
       poliName: map['poli_name']?.toString() ?? '',
       doctorName: map['doctor_name']?.toString() ?? '',
       patientName: map['patient_name']?.toString() ?? '',
-      scheduleLabel: map['schedule_label']?.toString() ?? '',
+      scheduleDate: DateTime.parse(map['schedule_date']?.toString() ?? DateTime.now().toIso8601String()),
       status: UpcomingQueueStatusLabel.fromString(map['status']?.toString() ?? 'mendatang'),
     );
   }
@@ -99,7 +99,7 @@ class UpcomingQueue {
       'poli_name': poliName,
       'doctor_name': doctorName,
       'patient_name': patientName,
-      'schedule_label': scheduleLabel,
+      'schedule_date': scheduleDate.toIso8601String().split('T')[0],
       'status': status.name,
     };
   }

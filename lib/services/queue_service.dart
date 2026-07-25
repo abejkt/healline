@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/active_queues.dart';
-import '../models/queue_ticket.dart';
 import 'api_config.dart';
 
 class QueueService {
-  Future<ActiveQueue?> fetchActiveQueue(String doctorName) async {
+  Future<ActiveQueue?> fetchActiveQueue(String doctorName, String dateIso) async {
     final encodedName = Uri.encodeComponent(doctorName);
     final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/active_queues?doctor_name=eq.$encodedName&select=*'),
+      Uri.parse('${ApiConfig.baseUrl}/active_queues?doctor_name=eq.$encodedName&date=eq.$dateIso&select=*'),
       headers: ApiConfig.headers,
     );
 
@@ -66,17 +65,19 @@ class QueueService {
     }
   }
 
-  Future<void> updateLastTicket(String doctorName, String newTicketNumber) async {
+  Future<void> updateLastTicket(String doctorName, String dateIso, String newTicketNumber, int newQuota) async {
+    final encodedName = Uri.encodeComponent(doctorName);
     final response = await http.patch(
-      Uri.parse('${ApiConfig.baseUrl}/active_queues?doctor_name=eq.$doctorName'),
+      Uri.parse('${ApiConfig.baseUrl}/active_queues?doctor_name=eq.$encodedName&date=eq.$dateIso'),
       headers: ApiConfig.headers,
       body: json.encode({
         'last_ticket_number': newTicketNumber,
+        'quota': newQuota,
       }),
     );
 
     if (response.statusCode != 200 && response.statusCode != 204) {
-      throw Exception('Failed to update last ticket: ${response.statusCode}');
+      throw Exception('Failed to update last ticket and quota: ${response.statusCode}');
     }
   }
 

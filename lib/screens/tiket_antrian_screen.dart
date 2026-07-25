@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/date_formatter.dart';
 import '../themes/app_theme.dart';
 import '../models/active_queues.dart';
 import '../services/auth_service.dart';
@@ -159,7 +160,7 @@ class _TicketCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _TicketDetail(label: 'Tanggal', value: ticket.scheduleLabel),
+                child: _TicketDetail(label: 'Tanggal', value: DateFormatterId.formatDateId(ticket.scheduleDate)),
               ),
               Expanded(
                 child: _TicketDetail(label: 'Pasien', value: ticket.patientName),

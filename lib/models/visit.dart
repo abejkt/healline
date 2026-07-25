@@ -23,19 +23,17 @@ extension VisitStatusLabel on VisitStatus {
 }
 
 class Visit {
-  final String id;
   final String poli;
   final String doctorName;
   final DateTime date;
-  final String queueCode;
+  final String ticketNumber;
   final VisitStatus status;
 
   const Visit({
-    required this.id,
     required this.poli,
     required this.doctorName,
     required this.date,
-    required this.queueCode,
+    required this.ticketNumber,
     required this.status,
   });
 
@@ -43,22 +41,20 @@ class Visit {
 
   factory Visit.fromMap(Map<String, dynamic> map) {
     return Visit(
-      id: map['id']?.toString() ?? '',
       poli: map['poli']?.toString() ?? '',
       doctorName: map['doctor_name']?.toString() ?? '',
       date: map['date'] != null ? DateTime.parse(map['date']) : DateTime.now(),
-      queueCode: map['queue_code']?.toString() ?? '',
+      ticketNumber: map['ticket_number']?.toString() ?? '',
       status: VisitStatusLabel.fromString(map['status']?.toString() ?? 'selesai'),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'poli': poli,
       'doctor_name': doctorName,
       'date': date.toIso8601String(),
-      'queue_code': queueCode,
+      'ticket_number': ticketNumber,
       'status': status.name,
     };
   }

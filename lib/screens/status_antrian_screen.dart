@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/date_formatter.dart';
 import '../models/active_queues.dart';
 import '../services/auth_service.dart';
 import '../services/queue_service.dart';
@@ -55,9 +56,11 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
 
       // 3. Fetch status for the target ticket
       ActiveQueue? status;
+      UpcomingQueue? myTicket;
       if (targetTicket != null) {
-        final myTicket = upcoming.firstWhere((t) => t.ticketNumber == targetTicket);
-        status = await _queueService.fetchActiveQueue(myTicket.doctorName);
+        myTicket = upcoming.firstWhere((t) => t.ticketNumber == targetTicket);
+        final dateIso = myTicket.scheduleDate.toIso8601String().split('T')[0];
+        status = await _queueService.fetchActiveQueue(myTicket.doctorName, dateIso);
         
         setState(() {
           _status = status;
@@ -412,7 +415,7 @@ class _UpcomingQueueTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  item.scheduleLabel,
+                  DateFormatterId.formatDateId(item.scheduleDate),
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,

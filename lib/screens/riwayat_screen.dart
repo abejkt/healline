@@ -305,7 +305,7 @@ class _VisitTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${DateFormatterId.formatDateId(visit.date)} · ${visit.queueCode}',
+                    '${DateFormatterId.formatDateId(visit.date)} · ${visit.ticketNumber}',
                     style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.textSecondary,

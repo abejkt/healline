@@ -102,8 +102,9 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
       setState(() {
         _doctors = doctors;
         final available = doctors.where((d) {
-          final q = _doctorQuotas[d.name];
-          return q == null || q > 0;
+          // If no row in active_queues (null), treat as 0 quota
+          final q = _doctorQuotas[d.name] ?? 0;
+          return q > 0;
         }).toList();
         _selectedDoctorId = available.isNotEmpty ? available.first.id : null;
       });
@@ -215,35 +216,43 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
     try {
       final poli = _polis.firstWhere((p) => p.id == _selectedPoliId);
       final doctor = _doctors.firstWhere((d) => d.id == _selectedDoctorId);
+      final dateIso = _selectedDate.toIso8601String().split('T')[0];
       
-      // 1. Get last ticket from active_queue_status
-      final liveStatus = await _queueService.fetchActiveQueue(doctor.name);
+      // 1. Get last ticket from active_queue_status for selected date
+      final liveStatus = await _queueService.fetchActiveQueue(doctor.name, dateIso);
       
       String ticketNumber;
+      int newQuota = 0;
       final prefix = doctor.doctorCode;
       
-      if (liveStatus != null && liveStatus.lastTicketNumber.isNotEmpty) {
+      if (liveStatus != null) {
         // Parse last number and increment (format expected: prefix-XXX)
-        final parts = liveStatus.lastTicketNumber.split('-');
+        final lastTicket = liveStatus.lastTicketNumber;
         int nextNum = 1;
-        if (parts.length > 1) {
-          nextNum = (int.tryParse(parts[1]) ?? 0) + 1;
+        if (lastTicket.isNotEmpty) {
+          final parts = lastTicket.split('-');
+          if (parts.length > 1) {
+            nextNum = (int.tryParse(parts[1]) ?? 0) + 1;
+          }
         }
         ticketNumber = '$prefix-${nextNum.toString().padLeft(3, '0')}';
+        newQuota = (liveStatus.quota ?? 0) - 1;
+        if (newQuota < 0) newQuota = 0;
       } else {
-        // Start from 001 if no record or empty
+        // Start from 001 if no record
         ticketNumber = '$prefix-001';
+        newQuota = 0; // Should not happen based on your requirement
       }
 
-      // 2. Update last_ticket_number in database
-      await _queueService.updateLastTicket(doctor.name, ticketNumber);
+      // 2. Update last_ticket_number and decrement quota in database for selected date
+      await _queueService.updateLastTicket(doctor.name, dateIso, ticketNumber, newQuota);
 
       final queueData = {
         'ticket_number': ticketNumber,
         'poli_name': poli.name,
         'doctor_name': doctor.name,
         'patient_name': _selectedPatient.name,
-        'schedule_label': DateFormatterId.formatDateId(_selectedDate),
+        'schedule_date': _selectedDate.toIso8601String().split('T')[0],
         'user_id': user.id,
         'status': 'mendatang',
       };
@@ -252,12 +261,11 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
 
       // Create a record in the visits table as well
       final visitData = {
-        'id': 'v-${ticket.ticketNumber}',
         'user_id': user.id,
         'poli': poli.name,
         'doctor_name': doctor.name,
         'date': _selectedDate.toIso8601String(),
-        'queue_code': ticket.ticketNumber,
+        'ticket_number': ticket.ticketNumber,
         'status': 'terjadwal',
       };
       await _visitService.createVisit(visitData);
@@ -572,10 +580,12 @@ class _DoctorTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isAvailable = quota == null || quota! > 0;
+    // If no row in active_queues (null), treat as 0 quota
+    final int currentQuota = quota ?? 0;
+    final bool isAvailable = currentQuota > 0;
     final String quotaLabel = isAvailable 
-        ? (quota != null ? 'Kuota tersisa: $quota' : 'Kuota tersedia')
-        : 'Kuota penuh';
+        ? 'Kuota Tersedia: $currentQuota'
+        : 'Kuota Tidak Tersedia';
         
     final Color statusBg = isAvailable
         ? const Color(0xFFD9F0DE)
@@ -639,7 +649,7 @@ class _DoctorTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  isAvailable ? 'Tersedia' : 'Penuh',
+                  isAvailable ? 'Tersedia' : 'Tidak Tersedia',
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
