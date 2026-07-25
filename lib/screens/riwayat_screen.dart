@@ -99,16 +99,6 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                   const SizedBox(height: 16),
                   _VisitListCard(visits: visits),
                   const SizedBox(height: 16),
-                  OutlinedButton.icon(
-                    onPressed: visits.isEmpty
-                        ? null
-                        : () {
-                            // TODO: pre-fill antrian baru di riwayat kunjungan terakhir poli.
-                          },
-                    icon: const Icon(Icons.north_east, size: 18),
-                    label: const Text('Daftar ulang kunjungan terakhir'),
-                  ),
-                  const SizedBox(height: 16),
                   _DownloadRecapRow(
                     onTap: () {
                       // TODO: export semua riwayat kunjungan ke PDF.
