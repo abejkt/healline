@@ -7,6 +7,7 @@ import '../themes/app_theme.dart';
 import 'home_screen.dart';
 import 'ambil_antrian_screen.dart';
 import 'profile_screen.dart';
+import 'visit_detail_screen.dart';
 
 class RiwayatScreen extends StatefulWidget {
   static const routeName = '/riwayat';
@@ -261,7 +262,11 @@ class _VisitTile extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        // TODO: navigate to visit detail screen.
+        Navigator.pushNamed(
+          context,
+          VisitDetailScreen.routeName,
+          arguments: visit,
+        );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
