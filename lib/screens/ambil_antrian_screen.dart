@@ -40,6 +40,7 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
   List<Poli> _polis = [];
   List<Doctor> _doctors = [];
   List<Patient> _availablePatients = [];
+  Map<String, int?> _doctorQuotas = {}; // To store dynamic quotas
   
   bool _isLoadingPolis = true;
   bool _isLoadingDoctors = false;
@@ -96,15 +97,38 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
 
     try {
       final doctors = await _doctorService.fetchDoctors(_selectedPoliId!);
+      await _fetchQuotas(); // Fetch dynamic quotas
+      
       setState(() {
         _doctors = doctors;
-        final available = doctors.where((d) => d.isAvailable).toList();
+        final available = doctors.where((d) {
+          final q = _doctorQuotas[d.name];
+          return q == null || q > 0;
+        }).toList();
         _selectedDoctorId = available.isNotEmpty ? available.first.id : null;
       });
     } catch (e) {
       debugPrint('Error fetching doctors: $e');
     } finally {
       setState(() => _isLoadingDoctors = false);
+    }
+  }
+
+  Future<void> _fetchQuotas() async {
+    try {
+      final dateIso = _selectedDate.toIso8601String().split('T')[0];
+      final activeQueues = await _queueService.fetchActiveQueuesByDate(dateIso);
+      
+      final Map<String, int?> quotas = {};
+      for (var aq in activeQueues) {
+        quotas[aq.doctorName] = aq.quota;
+      }
+      
+      setState(() {
+        _doctorQuotas = quotas;
+      });
+    } catch (e) {
+      debugPrint('Error fetching quotas: $e');
     }
   }
 
@@ -124,6 +148,7 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
     );
     if (picked != null) {
       setState(() => _selectedDate = picked);
+      _fetchDoctors(); // Refetch doctors and quotas for new date
     }
   }
 
@@ -300,6 +325,7 @@ class _AmbilAntrianScreenState extends State<AmbilAntrianScreen> {
             else
               _DoctorListCard(
                 doctors: _doctors,
+                doctorQuotas: _doctorQuotas,
                 selectedDoctorId: _selectedDoctorId,
                 onSelected: (id) => setState(() => _selectedDoctorId = id),
               ),
@@ -480,11 +506,13 @@ class _DateField extends StatelessWidget {
 
 class _DoctorListCard extends StatelessWidget {
   final List<Doctor> doctors;
+  final Map<String, int?> doctorQuotas;
   final String? selectedDoctorId;
   final ValueChanged<String> onSelected;
 
   const _DoctorListCard({
     required this.doctors,
+    required this.doctorQuotas,
     required this.selectedDoctorId,
     required this.onSelected,
   });
@@ -516,6 +544,7 @@ class _DoctorListCard extends StatelessWidget {
           for (int i = 0; i < doctors.length; i++) ...[
             _DoctorTile(
               doctor: doctors[i],
+              quota: doctorQuotas[doctors[i].name],
               isSelected: doctors[i].id == selectedDoctorId,
               onTap: () => onSelected(doctors[i].id),
             ),
@@ -530,18 +559,24 @@ class _DoctorListCard extends StatelessWidget {
 
 class _DoctorTile extends StatelessWidget {
   final Doctor doctor;
+  final int? quota;
   final bool isSelected;
   final VoidCallback onTap;
 
   const _DoctorTile({
     required this.doctor,
+    this.quota,
     required this.isSelected,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bool isAvailable = doctor.isAvailable;
+    final bool isAvailable = quota == null || quota! > 0;
+    final String quotaLabel = isAvailable 
+        ? (quota != null ? 'Kuota tersisa: $quota' : 'Kuota tersedia')
+        : 'Kuota penuh';
+        
     final Color statusBg = isAvailable
         ? const Color(0xFFD9F0DE)
         : const Color(0xFFF7DEDC);
@@ -587,7 +622,7 @@ class _DoctorTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      doctor.quotaLabel,
+                      quotaLabel,
                       style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
@@ -604,7 +639,7 @@ class _DoctorTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  doctor.availability.label,
+                  isAvailable ? 'Tersedia' : 'Penuh',
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,

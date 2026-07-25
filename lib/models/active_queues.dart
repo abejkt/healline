@@ -1,20 +1,33 @@
 class ActiveQueue {
+  final DateTime date;
   final String doctorName;
   final String poliName;
+  final int? quota;
   final String calledNumberLabel;
   final String lastTicketNumber;
 
   const ActiveQueue({
+    required this.date,
     required this.doctorName,
     required this.poliName,
+    required this.quota,
     required this.calledNumberLabel,
     required this.lastTicketNumber,
   });
 
+  bool get isAvailable => quota == null || quota! > 0;
+
+  String get quotaLabel =>
+      isAvailable ? 'Kuota tersisa: $quota' : 'Kuota penuh';
+
   factory ActiveQueue.fromMap(Map<String, dynamic> map) {
     return ActiveQueue(
+      date: DateTime.parse(map['date']?.toString() ?? ''),
       doctorName: map['doctor_name']?.toString() ?? '',
       poliName: map['poli_name']?.toString() ?? '',
+      quota: map['quota'] is int
+          ? map['quota']
+          : int.tryParse(map['quota']?.toString() ?? ''),
       calledNumberLabel: map['called_number_label']?.toString() ?? '',
       lastTicketNumber: map['last_ticket_number']?.toString() ?? '',
     );
@@ -22,8 +35,10 @@ class ActiveQueue {
 
   Map<String, dynamic> toMap() {
     return {
-      'poli_name': poliName,
+      'date': date.toIso8601String(),
       'doctor_name': doctorName,
+      'poli_name': poliName,
+      'quota': quota,
       'called_number_label': calledNumberLabel,
       'last_ticket_number': lastTicketNumber,
     };

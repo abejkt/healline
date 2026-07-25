@@ -164,36 +164,22 @@ class _StatusAntrianScreenState extends State<StatusAntrianScreen> {
             if (_status != null && _activeTicket != null) ...[
               _ActiveQueueCard(status: _status!, ticket: _activeTicket!),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        // TODO: open the live tracker / map view.
-                      },
-                      child: const Text('Pantau live'),
-                    ),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () => _confirmCancel(context),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFFD9534F),
+                    side: const BorderSide(color: Color(0xFFD9534F)),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => _confirmCancel(context),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFD9534F),
-                        side: const BorderSide(color: Color(0xFFD9534F)),
-                      ),
-                      child: const Text('Batalkan'),
-                    ),
-                  ),
-                ],
+                  child: const Text('Batalkan'),
+                ),
               ),
               const SizedBox(height: 24),
             ],
             const _SectionLabel('ANTRIAN LAINNYA'),
             const SizedBox(height: 12),
             _UpcomingQueueCard(items: _upcoming),
-            const SizedBox(height: 16),
-            const _LiveTrackerRow(),
           ],
         ),
       ),
@@ -456,70 +442,3 @@ class _UpcomingQueueTile extends StatelessWidget {
   }
 }
 
-class _LiveTrackerRow extends StatelessWidget {
-  const _LiveTrackerRow();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.cardWhite,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: const BoxDecoration(
-              color: Color(0xFFD9F0DE),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.podcasts_outlined,
-                size: 17, color: AppColors.successGreen),
-          ),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Live tracker aktif',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  'Notifikasi dikirim saat giliran Anda',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              color: const Color(0xFFD9F0DE),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Text(
-              'Aktif',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: AppColors.successGreen,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

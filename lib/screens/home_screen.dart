@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/date_formatter.dart';
 import '../services/auth_service.dart';
 import '../services/queue_service.dart';
+import '../services/notification_service.dart';
 import '../models/active_queues.dart';
 import '../themes/app_theme.dart';
 import 'ambil_antrian_screen.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final QueueService _queueService = QueueService();
+  final NotificationService _notificationService = NotificationService();
   
   String _userName = AuthService.currentUser?.name ?? 'Tamu';
   final String _dateLabel = DateFormatterId.formatFullDateId(DateTime.now());
@@ -33,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _notificationService.init();
     _fetchActiveQueue();
   }
 
@@ -60,6 +63,18 @@ class _HomeScreenState extends State<HomeScreen> {
           _queueStatus = ticket.status.label;
           _queueDetail = '${ticket.poliName} · ${ticket.doctorName}';
         });
+
+        // Coba ambil info live (nomor yang sedang dipanggil) - Opsional
+        try {
+          final liveStatus = await _queueService.fetchActiveQueue(ticket.doctorName);
+          if (liveStatus != null) {
+            setState(() {
+              _queueDetail = '${ticket.poliName} · Sedang dipanggil: ${liveStatus.calledNumberLabel}';
+            });
+          }
+        } catch (_) {
+          // Abaikan jika info live belum tersedia
+        }
       } else {
         setState(() {
           _queueNumber = null;
@@ -74,6 +89,35 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _checkNotifications() async {
+    final user = AuthService.currentUser;
+    if (user == null) return;
+
+    try {
+      final upcoming = await _queueService.fetchUpcomingQueues(user.id);
+      bool anyAktif = false;
+      
+      for (var q in upcoming) {
+        if (q.status == UpcomingQueueStatus.aktif) {
+          anyAktif = true;
+          _notificationService.showNotification(
+            id: 100,
+            title: "Antrian Anda Aktif!",
+            body: "Tiket ${q.ticketNumber} di ${q.poliName} kini berstatus AKTIF.",
+          );
+        }
+      }
+
+      if (!anyAktif && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Belum ada pemberitahuan antrian aktif.')),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error checking notifications: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +129,11 @@ class _HomeScreenState extends State<HomeScreen> {
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
             children: [
-              _Header(userName: _userName, dateLabel: _dateLabel),
+              _Header(
+                userName: _userName, 
+                dateLabel: _dateLabel,
+                onNotificationTap: _checkNotifications,
+              ),
               const SizedBox(height: 20),
               if (_isLoadingQueue)
                 const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator()))
@@ -114,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: (index) {
           if (index == 0) return;
           if (index == 1) {
-            Navigator.pushNamed(context, AmbilAntrianScreen.routeName);
+            Navigator.pushNamed(context, StatusAntrianScreen.routeName);
           } else if (index == 2) {
             Navigator.pushNamed(context, RiwayatScreen.routeName);
           } else if (index == 3) {
@@ -188,8 +236,13 @@ class _NoActiveQueueCard extends StatelessWidget {
 class _Header extends StatelessWidget {
   final String userName;
   final String dateLabel;
+  final VoidCallback onNotificationTap;
 
-  const _Header({required this.userName, required this.dateLabel});
+  const _Header({
+    required this.userName, 
+    required this.dateLabel,
+    required this.onNotificationTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -219,18 +272,22 @@ class _Header extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: AppColors.cardWhite,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.inputBorder),
-          ),
-          child: const Icon(
-            Icons.notifications_none_outlined,
-            color: AppColors.textPrimary,
-            size: 20,
+        InkWell(
+          onTap: onNotificationTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.cardWhite,
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.inputBorder),
+            ),
+            child: const Icon(
+              Icons.notifications_none_outlined,
+              color: AppColors.textPrimary,
+              size: 20,
+            ),
           ),
         ),
       ],
