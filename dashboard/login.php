@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (!empty($res)) {
         $_SESSION['admin'] = $res[0];
-        header("Location: dashboard.php");
+        header("Location: index.php");
     } else {
         $error = "Username atau Password salah!";
     }
