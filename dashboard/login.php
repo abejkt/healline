@@ -10,12 +10,16 @@ if (session_status() === PHP_SESSION_NONE) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $_POST['username'];
     // Hash SHA-256 (lowercase)
-    $pass = hash('sha256', $_POST['password']); 
+    $pass = hash('sha256', $_POST['password']);
 
-    // Encode parameter URL
-    $url = $base_url . "/user_login?user_name=eq." . urlencode($user) . "&password_hash=eq." . urlencode($pass);
-    
-    $res = callAPI("GET", $url);
+    // Kirim sebagai POST JSON, bukan query string
+    $payload = json_encode([
+        'user_name' => $user,
+        'password_hash' => $pass
+    ]);
+
+    // Panggil API dengan POST dan body JSON
+    $res = callAPI("POST", $base_url . "/user_login", $payload);
 
     // Decode jika respon berupa string JSON
     if (is_string($res)) {
