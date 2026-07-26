@@ -3,7 +3,7 @@
 session_start();
 
 $base_url = "https://34.50.106.220:8443/rest/v1";
-$api_key = "PASTE_YOUR_JWT_TOKEN_HERE"; // Ambil dari api_config.dart
+$api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzc5Mjg5MTExLCJleHAiOjE5MzY5NjkxMTF9.AGU9FqRFP-uPjPqvMSeHTmD22GWLecz_qAa5B6fL1Hg";
 
 $headers = [
     "apikey: " . $api_key,
