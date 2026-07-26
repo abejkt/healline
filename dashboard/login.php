@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validasi hasil array
     if (!empty($res) && is_array($res) && count($res) > 0) {
         $_SESSION['admin'] = $res[0];
-        header("Location: dashboard.php");
+        header("Location: index.php");
         exit(); // Hentikan eksekusi script setelah redirect
     } else {
         $error = "Username atau Password salah!";
