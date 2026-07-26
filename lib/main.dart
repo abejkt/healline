@@ -18,6 +18,7 @@ import 'screens/change_phone_screen.dart';
 import 'screens/change_email_screen.dart';
 import 'screens/add_family_member_screen.dart';
 import 'screens/family_member_detail_screen.dart';
+import 'screens/about_screen.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -61,6 +62,7 @@ class HealLineApp extends StatelessWidget {
         ChangeEmailScreen.routeName: (_) => const ChangeEmailScreen(),
         AddFamilyMemberScreen.routeName: (_) => const AddFamilyMemberScreen(),
         FamilyMemberDetailScreen.routeName: (_) => const FamilyMemberDetailScreen(),
+        AboutScreen.routeName: (_) => const AboutScreen(),
       },
     );
   }

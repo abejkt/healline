@@ -12,6 +12,7 @@ import 'change_email_screen.dart';
 import 'edit_profile_screen.dart';
 import 'add_family_member_screen.dart';
 import 'family_member_detail_screen.dart';
+import 'about_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = '/profile';
@@ -88,6 +89,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: const Text('+ Tambah anggota keluarga'),
             ),
             const SizedBox(height: 20),
+            _AboutRow(
+              onTap: () => Navigator.pushNamed(context, AboutScreen.routeName),
+            ),
+            const SizedBox(height: 12),
             _LogoutRow(
               onTap: () => _handleLogout(context),
             ),
@@ -95,6 +100,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       bottomNavigationBar: _ProfileBottomNav(),
+    );
+  }
+}
+
+class _AboutRow extends StatelessWidget {
+  final VoidCallback onTap;
+  const _AboutRow({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.cardWhite,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: const BoxDecoration(
+                  color: AppColors.activeQueueBg,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.info_outline,
+                    size: 17, color: AppColors.primaryBlue),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Tentang Aplikasi',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

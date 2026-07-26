@@ -48,7 +48,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Aplikasi antrian digital',
+                    'Smart Queue Management',
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.85),
                       fontSize: 14,
