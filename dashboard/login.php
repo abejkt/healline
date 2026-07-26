@@ -4,7 +4,7 @@ require 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $_POST['username'];
-    $pass = hash('sha256', $_POST['password']); // Samakan dengan Flutter (SHA-256)
+    $pass = $_POST['password']);
 
     $url = $base_url . "/user_login?user_name=eq." . $user . "&password_hash=eq." . $pass;
     $res = callAPI("GET", $url);
