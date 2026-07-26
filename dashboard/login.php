@@ -17,9 +17,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'user_name' => $user,
         'password_hash' => $pass
     ]);
-
+/*
     // Panggil API dengan POST dan body JSON
     $res = callAPI("POST", $base_url . "/user_login", $payload);
+*/
+    $res = callAPI("POST", $base_url . "/user_login", $payload);
+
+    // contoh debug cepat
+    echo "<pre>";
+    var_dump($res);
+    echo "</pre>";
+    exit;
 
     // Decode jika respon berupa string JSON
     if (is_string($res)) {
