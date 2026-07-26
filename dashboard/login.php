@@ -32,3 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
+<!-- HTML Login Form -->
+<form method="POST">
+    <h2>Login Admin HealLine</h2>
+    <?php if(isset($error)) echo "<p style='color:red'>$error</p>"; ?>
+    <input type="text" name="username" placeholder="Username" required><br><br>
+    <input type="password" name="password" placeholder="Password" required><br><br>
+    <button type="submit">Masuk</button>
+</form>
