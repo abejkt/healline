@@ -1,41 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import '../themes/app_theme.dart';
 
-class AboutScreen extends StatefulWidget {
+class AboutScreen extends StatelessWidget {
   static const routeName = '/about';
 
   const AboutScreen({super.key});
-
-  @override
-  State<AboutScreen> createState() => _AboutScreenState();
-}
-
-class _AboutScreenState extends State<AboutScreen> {
-  String _version = '...';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadAppVersion();
-  }
-
-  Future<void> _loadAppVersion() async {
-    try {
-      final packageInfo = await PackageInfo.fromPlatform();
-      if (mounted) {
-        setState(() {
-          _version = 'Versi ${packageInfo.version}';
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _version = 'Versi 1.0.0'; // Fallback
-        });
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +42,9 @@ class _AboutScreenState extends State<AboutScreen> {
                     color: AppColors.textPrimary,
                   ),
                 ),
-                Text(
-                  _version,
-                  style: const TextStyle(
+                const Text(
+                  'Versi 2.0.0',
+                  style: TextStyle(
                     fontSize: 14,
                     color: AppColors.textSecondary,
                   ),
