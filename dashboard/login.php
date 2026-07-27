@@ -28,12 +28,84 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-    
-<!-- HTML Login Form -->
-<form method="POST">
-    <h2>Login Admin HealLine</h2>
-    <?php if(isset($error)) echo "<p style='color:red'>$error</p>"; ?>
-    <input type="text" name="username" placeholder="Username" required><br><br>
-    <input type="password" name="password" placeholder="Password" required><br><br>
-    <button type="submit">Masuk</button>
-</form>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealLine - Smart Queue Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5; /* Warna latar belakang abu-abu muda */
+            margin: 0;
+            display: flex; /* Menggunakan Flexbox untuk centering */
+            justify-content: center; /* Centering horizontal */
+            align-items: center; /* Centering vertikal */
+            min-height: 100vh; /* Memastikan body mengambil tinggi penuh viewport */
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px; /* Lebar maksimum form */
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        p.error-message {
+            color: red;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 20px); /* Kurangi padding dari lebar total */
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; /* Penting agar padding tidak menambah lebar */
+            font-size: 16px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff; /* Warna biru */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3; /* Warna biru lebih gelap saat hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <form method="POST">
+            <h2>Login Admin HealLine</h2>
+            <?php if(isset($error)) echo "<p class='error-message'>$error</p>"; ?>
+            <input type="text" name="username" placeholder="Username" required><br>
+            <input type="password" name="password" placeholder="Password" required><br>
+            <button type="submit">Masuk</button>
+        </form>
+    </div>
+</body>
+</html>
