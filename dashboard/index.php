@@ -309,14 +309,18 @@ if (!is_array($queues)) {
 
         <!-- Info Auto Refresh -->
         <div class="refresh-info">
-            🔄 Halaman akan diperbarui otomatis dalam <span id="countdown">30</span> detik
+            🔄 Halaman akan diperbarui otomatis dalam <span id="countdown">15</span> detik
         </div>
 
     </div>
 
     <script>
         // ✅ Auto refresh dengan countdown timer
-        let seconds = 30;
+        if (window.location.search !== '') {
+            window.history.replaceState({}, document.title, 'index.php');
+        }
+
+        let seconds = 15;
         const countdownEl = document.getElementById('countdown');
 
         const timer = setInterval(function () {
@@ -326,7 +330,7 @@ if (!is_array($queues)) {
             }
             if (seconds <= 0) {
                 clearInterval(timer);
-                location.reload();
+                window.location.href = 'index.php';
             }
         }, 1000);
     </script>
