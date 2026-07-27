@@ -2,7 +2,6 @@
 // login.php
 require 'config.php';
 
-// Pastikan session aktif
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -13,12 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pass = hash('sha256', $_POST['password']);
 
     $params = [
-        'user_name' => $user,
-        'password_hash' => $pass
+        'user_name' => 'eq.' . $user,
+        'password_hash' => 'eq.' . $pass
     ];
 
     $res = callAPI("GET", $base_url . "/user_login", $params);
 
+    // Validasi hasil array
     if (!empty($res) && is_array($res) && count($res) > 0) {
         $_SESSION['admin'] = $res[0];
         header("Location: index.php");
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $error = "Username atau Password salah!";
     }
-}  
+}
 ?>
     
 <!-- HTML Login Form -->
