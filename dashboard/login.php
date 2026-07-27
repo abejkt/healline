@@ -6,36 +6,6 @@ require 'config.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-/*
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $user = $_POST['username'];
-    // Hash SHA-256 (lowercase)
-    $pass = hash('sha256', $_POST['password']);
-
-    // Kirim sebagai POST JSON, bukan query string
-    $payload = json_encode([
-        'user_name' => $user,
-        'password_hash' => $pass
-    ]);
-
-    // Panggil API dengan POST dan body JSON
-    $res = callAPI("POST", $base_url . "/user_login", $payload);
-
-    // Decode jika respon berupa string JSON
-    if (is_string($res)) {
-        $res = json_decode($res, true);
-    }
-
-    // Validasi hasil array
-    if (!empty($res) && is_array($res) && count($res) > 0) {
-        $_SESSION['admin'] = $res[0];
-        header("Location: index.php");
-        exit(); // Hentikan eksekusi script setelah redirect
-    } else {
-        $error = "Username atau Password salah!";
-    }
-}
-*/
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $user = $_POST['username'];
