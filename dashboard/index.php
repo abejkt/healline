@@ -38,12 +38,12 @@ $queues = callAPI("GET", $base_url . "/active_queues?date=eq." . $today);
     <title>Admin Dashboard - HealLine</title>
     <style>
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 20px; }
-        .card { border: 2px solid #1B4C8C; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; background: #f9f9f9; transition: 0.3s; }
+        .card { border: 2px solid #1D70B8; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; background: #f9f9f9; transition: 0.3s; }
         .card:hover { background: #DCEAFB; transform: scale(1.02); }
-        .card h3 { margin: 0; color: #1B4C8C; font-size: 14px; }
+        .card h3 { margin: 0; color: #1D70B8; font-size: 14px; }
         .card h4 { margin: 5px 0; color: #666; font-size: 12px; }
         .card .number { font-size: 40px; font-weight: bold; margin: 10px 0; color: #333; }
-        .card .btn-call { background: #1B4C8C; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        .card .btn-call { background: #1D70B8; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
