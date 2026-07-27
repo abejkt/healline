@@ -45,13 +45,15 @@ if (isset($_GET['call_next'])) {
     // ============================================================
     // STEP 2: Update status di visits
     // ============================================================
-    $patch_url_3 = $base_url . "/visits"
+    $patch_result_3 = callAPI(
+            "PATCH",
+            $base_url . "/visits"
                 . "?doctor_name=eq." . urlencode($doctor)
                 . "&schedule_date=eq." . $today
-                . "&status=eq.terjadwal";
-
-    $patch_result_3 = callAPI("PATCH", $patch_url_3);
-    
+                . "&status=eq.terjadwal",
+            ["status" => "selesai"]
+        );
+       
     // ============================================================
     // STEP 3: Cari antrian 'mendatang' paling awal untuk dokter ini
     // ============================================================
