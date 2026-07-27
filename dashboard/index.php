@@ -49,7 +49,7 @@ if (isset($_GET['call_next'])) {
             "PATCH",
             $base_url . "/visits"
                 . "?doctor_name=eq." . urlencode($doctor)
-                . "&schedule_date=eq." . $today
+                . "&date=eq." . $today
                 . "&status=eq.terjadwal",
             ["status" => "selesai"]
         );
