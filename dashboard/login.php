@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         button[type="submit"]:hover {
-            background-color: #0056b3; /* Warna biru lebih gelap saat hover */
+            background-color: #1D70B8; /* Warna biru lebih gelap saat hover */
         }
     </style>
 </head>
