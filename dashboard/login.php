@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $_POST['username'];
     // Hash SHA-256 (lowercase)
     $pass = hash('sha256', $_POST['password']);
