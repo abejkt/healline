@@ -54,17 +54,6 @@ if (isset($_GET['call_next'])) {
 
     $next_ticket = callAPI("GET", $q_url);
 
-    // ✅ DEBUG SEMENTARA — Uncomment jika masih bermasalah
-    /*
-    echo "<pre>";
-    echo "DELETE URL : " . $delete_url . "\n";
-    echo "DELETE Result : "; var_dump($delete_result);
-    echo "GET URL    : " . $q_url . "\n";
-    echo "Next Ticket: "; var_dump($next_ticket);
-    echo "</pre>";
-    exit();
-    */
-
     if (!empty($next_ticket) && is_array($next_ticket)) {
 
         $ticket_no = $next_ticket[0]['ticket_number'];
