@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <div class="login-container">
         <form method="POST">
-            <h2>Login Admin HealLine</h2>
+            <h2>HealLine - Smart Queue Management</h2>
             <?php if(isset($error)) echo "<p class='error-message'>$error</p>"; ?>
             <input type="text" name="username" placeholder="Username" required><br>
             <input type="password" name="password" placeholder="Password" required><br>
