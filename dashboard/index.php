@@ -309,7 +309,7 @@ if (!is_array($queues)) {
 
         <!-- Info Auto Refresh -->
         <div class="refresh-info">
-            🔄 Halaman akan diperbarui otomatis dalam <span id="countdown">15</span> detik
+            🔄 Halaman akan diperbarui otomatis dalam <span id="countdown">30</span> detik
         </div>
 
     </div>
@@ -320,7 +320,7 @@ if (!is_array($queues)) {
             window.history.replaceState({}, document.title, 'index.php');
         }
 
-        let seconds = 15;
+        let seconds = 30;
         const countdownEl = document.getElementById('countdown');
 
         const timer = setInterval(function () {
