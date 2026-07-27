@@ -26,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $error = "Username atau Password salah!";
     }
-}
-    
+}  
 ?>
+    
 <!-- HTML Login Form -->
 <form method="POST">
     <h2>Login Admin HealLine</h2>
