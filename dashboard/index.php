@@ -189,8 +189,8 @@ if (!is_array($queues)) {
             <?php if (!empty($queues)): ?>
                 <?php foreach ($queues as $q): ?>
                     <div class="card" onclick="location.href='?call_next=1&doctor=<?php echo urlencode($q['doctor_name']); ?>'">
-                        <h3><?php echo htmlspecialchars($q['poli_name']); ?></h3>
-                        <h4>dr. <?php echo htmlspecialchars($q['doctor_name']); ?></h4>
+                        <h3>POLI <?php echo strtoupper(htmlspecialchars($q['poli_name'])); ?></h3>
+                        <h4><?php echo htmlspecialchars($q['doctor_name']); ?></h4>
                         <div class="number"><?php echo htmlspecialchars($q['called_number_label'] ?: '-'); ?></div>
                         <button class="btn-call">PANGGIL BERIKUTNYA</button>
                     </div>
