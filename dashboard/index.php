@@ -43,7 +43,17 @@ if (isset($_GET['call_next'])) {
     $delete_result = callAPI("DELETE", $delete_url);
 
     // ============================================================
-    // STEP 2: Cari antrian 'mendatang' paling awal untuk dokter ini
+    // STEP 2: Update status di visits
+    // ============================================================
+    $patch_url_3 = $base_url . "/visits"
+                . "?doctor_name=eq." . urlencode($doctor)
+                . "&schedule_date=eq." . $today
+                . "&status=eq.terjadwal";
+
+    $patch_result_3 = callAPI("PATCH", $patch_url_3);
+    
+    // ============================================================
+    // STEP 3: Cari antrian 'mendatang' paling awal untuk dokter ini
     // ============================================================
     $q_url = $base_url . "/upcoming_queues"
            . "?doctor_name=eq." . urlencode($doctor)
@@ -59,7 +69,7 @@ if (isset($_GET['call_next'])) {
         $ticket_no = $next_ticket[0]['ticket_number'];
 
         // ============================================================
-        // STEP 3: Update status antrian berikutnya menjadi 'aktif'
+        // STEP 4: Update status antrian berikutnya menjadi 'aktif'
         // ============================================================
         $patch_result_1 = callAPI(
             "PATCH",
@@ -71,7 +81,7 @@ if (isset($_GET['call_next'])) {
         );
 
         // ============================================================
-        // STEP 4: Update called_number_label di tabel active_queues
+        // STEP 5: Update called_number_label di tabel active_queues
         // ============================================================
         $patch_result_2 = callAPI(
             "PATCH",
